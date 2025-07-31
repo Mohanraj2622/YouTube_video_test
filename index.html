@@ -9,147 +9,417 @@
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body, html {
       height: 100%;
-      font-family: monospace;
-      background-color: black;
-      color: white;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      overflow: hidden;
     }
-
-    /* Fake Code Editor */
+    
+    /* VS Code-like Editor */
     .editor {
-      height: 100%;
-      width: 100%;
-      background-color: #1e1e1e;
+      height: 100vh;
+      width: 100vw;
+      background-color: #0d1117;
       display: flex;
       flex-direction: column;
     }
-
-    .editor-header {
-      background-color: #333;
-      padding: 8px 16px;
-      color: #ccc;
-      font-size: 14px;
-      border-bottom: 1px solid #444;
+    
+    .title-bar {
+      background: linear-gradient(135deg, #1f2937, #374151);
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 12px;
+      color: #9ca3af;
+      border-bottom: 1px solid #21262d;
     }
-
+    
+    .traffic-lights {
+      display: flex;
+      gap: 6px;
+      margin-right: 12px;
+    }
+    
+    .light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .light.red { background: #ff5f56; }
+    .light.yellow { background: #ffbd2e; }
+    .light.green { background: #27ca3f; }
+    
+    .tab-bar {
+      background-color: #161b22;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #21262d;
+    }
+    
+    .tab {
+      height: 100%;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      background-color: #0d1117;
+      border-right: 1px solid #21262d;
+      color: #f0f6fc;
+      font-size: 13px;
+      position: relative;
+    }
+    
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #58a6ff;
+    }
+    
+    .tab .close {
+      margin-left: 8px;
+      color: #8b949e;
+      cursor: pointer;
+    }
+    
     .editor-body {
       flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      white-space: pre-wrap;
+      display: flex;
+      background-color: #0d1117;
     }
+    
 
+    
+    .code-area {
+      flex: 1;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 20px;
+      background-color: #58a6ff;
+      animation: blink 1s infinite;
+      margin-left: 1px;
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
     .hidden {
       display: none !important;
     }
-
-    .output-box {
-      height: 100%;
-      width: 100%;
-      background: black;
+    
+    .output-container {
+      height: 100vh;
+      width: 100vw;
+      background: radial-gradient(circle at center, #1a1a2e, #16213e, #0f3460);
       display: none;
       justify-content: center;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
-
+    
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #ff69b4;
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+      50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+    }
+    
     canvas {
-      background: black;
+      border-radius: 10px;
+      box-shadow: 0 0 50px rgba(255, 105, 180, 0.5);
     }
-
-    span.pink { color: pink; }
-    span.red { color: red; }
-    span.keyword { color: cyan; }
-    span.func { color: yellow; }
-    span.string { color: orange; }
-    span.number { color: violet; }
+    
+    .message {
+      position: absolute;
+      bottom: 50px;
+      font-size: 24px;
+      color: #ff69b4;
+      text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Syntax Highlighting */
+    .keyword { color: #ff7b72; }
+    .func { color: #d2a8ff; }
+    .string { color: #a5d6ff; }
+    .number { color: #79c0ff; }
+    .comment { color: #8b949e; font-style: italic; }
+    .import { color: #ffa657; }
+    .def { color: #ff7b72; }
+    .for { color: #ff7b72; }
+    .in { color: #ff7b72; }
+    .range { color: #d2a8ff; }
   </style>
 </head>
 <body>
-
-  <!-- Fake Code Editor -->
+  <!-- Realistic Code Editor -->
   <div class="editor" id="editor">
-    <div class="editor-header">crush.py - Python (IDLE)</div>
-    <div class="editor-body" id="codeBox"></div>
+    <div class="title-bar">
+      <div class="traffic-lights">
+        <div class="light red"></div>
+        <div class="light yellow"></div>
+        <div class="light green"></div>
+      </div>
+      <span>Visual Studio Code</span>
+    </div>
+    
+    <div class="tab-bar">
+      <div class="tab">
+        heart.py
+        <span class="close">×</span>
+      </div>
+    </div>
+    
+    <div class="editor-body">
+      <div class="code-area" id="codeArea">
+        <span class="cursor" id="cursor"></span>
+      </div>
+    </div>
   </div>
-
-  <!-- Output Heart -->
-  <div class="output-box" id="outputBox">
-    <canvas id="heartCanvas" width="600" height="600"></canvas>
+  
+  <!-- Enhanced Output -->
+  <div class="output-container" id="outputContainer">
+    <div class="particles" id="particles"></div>
+    <canvas id="heartCanvas" width="800" height="600"></canvas>
+    <div class="message">Made with ❤️ for you</div>
   </div>
 
   <script>
     const codeLines = [
-      `<span class="keyword">import</span> turtle`,
+      `<span class="comment"># Creating something special for you... 💕</span>`,
+      `<span class="import">import</span> math`,
+      `<span class="import">import</span> time`,
+      `<span class="import">from</span> turtle <span class="import">import</span> *`,
       ``,
-      `turtle.<span class="func">speed</span>(<span class="number">3</span>)`,
-      `turtle.<span class="func">bgcolor</span>(<span class="string">'black'</span>)`,
-      `turtle.<span class="func">pensize</span>(<span class="number">3</span>)`,
+      `<span class="comment"># Set up the canvas</span>`,
+      `<span class="func">speed</span>(<span class="number">0</span>)`,
+      `<span class="func">bgcolor</span>(<span class="string">'black'</span>)`,
+      `<span class="func">pensize</span>(<span class="number">3</span>)`,
+      `<span class="func">shape</span>(<span class="string">'turtle'</span>)`,
       ``,
-      `<span class="keyword">def</span> func():`,
-      `    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">200</span>):`,
-      `        turtle.<span class="func">right</span>(<span class="number">1</span>)`,
-      `        turtle.<span class="func">forward</span>(<span class="number">1</span>)`,
+      `<span class="def">def</span> <span class="func">draw_heart</span>():`,
+      `    <span class="comment"># This heart beats for you</span>`,
+      `    <span class="func">color</span>(<span class="string">'red'</span>, <span class="string">'pink'</span>)`,
+      `    <span class="func">begin_fill</span>()`,
+      `    `,
+      `    <span class="comment"># Mathematical heart equation</span>`,
+      `    <span class="for">for</span> i <span class="in">in</span> <span class="range">range</span>(<span class="number">360</span>):`,
+      `        <span class="comment"># Heart parametric equations</span>`,
+      `        t = math.<span class="func">radians</span>(i)`,
+      `        x = <span class="number">16</span> * math.<span class="func">sin</span>(t)**<span class="number">3</span>`,
+      `        y = <span class="number">13</span> * math.<span class="func">cos</span>(t) - <span class="number">5</span> * math.<span class="func">cos</span>(<span class="number">2</span>*t) - <span class="number">2</span> * math.<span class="func">cos</span>(<span class="number">3</span>*t) - math.<span class="func">cos</span>(<span class="number">4</span>*t)`,
+      `        <span class="func">goto</span>(x * <span class="number">10</span>, y * <span class="number">10</span>)`,
+      `    `,
+      `    <span class="func">end_fill</span>()`,
+      `    <span class="func">hideturtle</span>()`,
       ``,
-      `turtle.<span class="func">color</span>(<span class="string">'red'</span>, <span class="string">'pink'</span>)`,
-      `turtle.<span class="func">begin_fill</span>()`,
+      `<span class="comment"># Execute the magic</span>`,
+      `<span class="func">draw_heart</span>()`,
+      `<span class="func">done</span>()`,
+      ``,
+      `<span class="comment"># You make my heart beat faster! 💓</span>`
     ];
 
-    const codeBox = document.getElementById("codeBox");
+    const codeArea = document.getElementById("codeArea");
+    const cursor = document.getElementById("cursor");
     const editor = document.getElementById("editor");
-    const outputBox = document.getElementById("outputBox");
+    const outputContainer = document.getElementById("outputContainer");
     const canvas = document.getElementById("heartCanvas");
     const ctx = canvas.getContext("2d");
+    
+    let currentLine = 0;
+    let currentChar = 0;
+    let isTyping = false;
 
-    let line = 0;
+    // Realistic typing effect
+    function typeCode() {
+      if (currentLine >= codeLines.length) {
+        cursor.style.display = 'none';
+        setTimeout(showOutput, 1500);
+        return;
+      }
 
-    function typeNextLine() {
-      if (line < codeLines.length) {
-        codeBox.innerHTML += codeLines[line] + "\n";
-        line++;
-        setTimeout(typeNextLine, 250); // delay per line
+      const line = codeLines[currentLine];
+      const plainText = line.replace(/<[^>]*>/g, ''); // Remove HTML tags for character counting
+      
+      if (currentChar === 0) {
+        // Start new line
+        codeArea.innerHTML = codeArea.innerHTML.replace('<span class="cursor" id="cursor"></span>', '');
+        if (currentLine > 0) codeArea.innerHTML += '\n';
+      }
+
+      if (currentChar < plainText.length) {
+        // Type character by character
+        const charToAdd = plainText[currentChar];
+        
+        // Rebuild the line with proper HTML tags
+        let htmlLine = line;
+        let plainIndex = 0;
+        let result = '';
+        let inTag = false;
+        
+        for (let i = 0; i < htmlLine.length; i++) {
+          if (htmlLine[i] === '<') {
+            inTag = true;
+            result += htmlLine[i];
+          } else if (htmlLine[i] === '>') {
+            inTag = false;
+            result += htmlLine[i];
+          } else if (inTag) {
+            result += htmlLine[i];
+          } else {
+            if (plainIndex < currentChar) {
+              result += htmlLine[i];
+            } else if (plainIndex === currentChar) {
+              result += htmlLine[i];
+              break;
+            }
+            plainIndex++;
+          }
+        }
+        
+        // Update the current line in display
+        const lines = codeArea.innerHTML.split('\n');
+        lines[currentLine] = result;
+        codeArea.innerHTML = lines.join('\n') + '<span class="cursor" id="cursor"></span>';
+        
+        currentChar++;
+        
+        // Variable typing speed for realism
+        let delay = Math.random() * 50 + 30;
+        if (charToAdd === ' ') delay = Math.random() * 100 + 50;
+        if (charToAdd === '\n') delay = 200;
+        
+        setTimeout(typeCode, delay);
       } else {
-        setTimeout(() => {
-          editor.classList.add("hidden");
-          outputBox.style.display = "flex";
-          drawHeart();
-        }, 800);
+        // Line complete, move to next
+        currentLine++;
+        currentChar = 0;
+        setTimeout(typeCode, Math.random() * 300 + 200);
       }
     }
 
-    typeNextLine();
+    function showOutput() {
+      editor.classList.add("hidden");
+      outputContainer.style.display = "flex";
+      createParticles();
+      setTimeout(drawAnimatedHeart, 500);
+    }
 
-    function drawHeart() {
+    function createParticles() {
+      const particlesContainer = document.getElementById("particles");
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement("div");
+        particle.className = "particle";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.animationDelay = Math.random() * 6 + "s";
+        particle.style.animationDuration = (Math.random() * 3 + 3) + "s";
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    function drawAnimatedHeart() {
       ctx.translate(canvas.width / 2, canvas.height / 2);
       let t = 0;
-
+      let scale = 0;
+      
       function animate() {
         ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+        
+        // Create gradient
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 200);
+        gradient.addColorStop(0, '#ff69b4');
+        gradient.addColorStop(0.5, '#ff1493');
+        gradient.addColorStop(1, '#dc143c');
+        
+        ctx.fillStyle = gradient;
+        ctx.strokeStyle = '#ff69b4';
+        ctx.lineWidth = 3;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#ff69b4';
+        
         ctx.beginPath();
-        ctx.fillStyle = "pink";
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
-
-        ctx.moveTo(0, 0);
-        for (let i = 0; i < t; i += 0.01) {
-          let x = 16 * Math.sin(i) ** 3;
-          let y = - (13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
-          ctx.lineTo(x * 10, y * 10);
+        
+        // Heart equation with animation
+        for (let i = 0; i <= t; i += 0.01) {
+          const x = 16 * Math.sin(i) ** 3;
+          const y = -(13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
+          
+          if (i === 0) {
+            ctx.moveTo(x * scale, y * scale);
+          } else {
+            ctx.lineTo(x * scale, y * scale);
+          }
         }
-
+        
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-
-        t += 0.05;
-        if (t < Math.PI * 2) {
+        
+        // Animate parameters
+        t += 0.1;
+        if (scale < 8) scale += 0.1;
+        
+        // Pulsing effect
+        const pulse = Math.sin(Date.now() * 0.005) * 0.1 + 1;
+        ctx.save();
+        ctx.scale(pulse, pulse);
+        ctx.restore();
+        
+        if (t < Math.PI * 2 + 1) {
           requestAnimationFrame(animate);
+        } else {
+          // Heart complete, add final touches
+          ctx.font = '24px monospace';
+          ctx.fillStyle = '#fff';
+          ctx.textAlign = 'center';
+          ctx.fillText('💕 For you Love 💕', 0, 250);
         }
       }
-
+      
       animate();
     }
+
+    // Start the show
+    setTimeout(typeCode, 1000);
   </script>
 </body>
 </html>
