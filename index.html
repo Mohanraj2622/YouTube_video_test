@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Impress Your Crush ❤️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      background: black;
+      color: white;
+      font-family: monospace;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .code-box {
+      width: 100%;
+      padding: 20px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      background: #111;
+      border-right: 2px solid #444;
+    }
+
+    .output-box {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background: black;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    canvas {
+      background: black;
+    }
+
+    span.pink { color: pink; }
+    span.red { color: red; }
+    span.keyword { color: cyan; }
+    span.func { color: yellow; }
+    span.string { color: orange; }
+    span.number { color: violet; }
+  </style>
+</head>
+<body>
+  <div class="container" id="codeContainer">
+    <div class="code-box" id="codeBox"></div>
+  </div>
+
+  <div class="output-box" id="outputBox">
+    <canvas id="heartCanvas" width="600" height="600"></canvas>
+  </div>
+
+  <script>
+    const codeLines = [
+      `<span class="keyword">import</span> turtle`,
+      ``,
+      `turtle.<span class="func">speed</span>(<span class="number">3</span>)`,
+      `turtle.<span class="func">bgcolor</span>(<span class="string">'black'</span>)`,
+      `turtle.<span class="func">pensize</span>(<span class="number">3</span>)`,
+      ``,
+      `<span class="keyword">def</span> func():`,
+      `    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">200</span>):`,
+      `        turtle.<span class="func">right</span>(<span class="number">1</span>)`,
+      `        turtle.<span class="func">forward</span>(<span class="number">1</span>)`,
+      ``,
+      `turtle.<span class="func">color</span>(<span class="string">'red'</span>, <span class="string">'pink'</span>)`,
+      `turtle.<span class="func">begin_fill</span>()`,
+    ];
+
+    const codeBox = document.getElementById("codeBox");
+    const outputBox = document.getElementById("outputBox");
+    const canvas = document.getElementById("heartCanvas");
+    const ctx = canvas.getContext("2d");
+    let line = 0;
+
+    function typeNextLine() {
+      if (line < codeLines.length) {
+        codeBox.innerHTML += codeLines[line] + "\n";
+        line++;
+        setTimeout(typeNextLine, 300);
+      } else {
+        setTimeout(() => {
+          // Hide code and show full-page heart canvas
+          document.getElementById("codeContainer").style.display = "none";
+          outputBox.style.display = "flex";
+          drawHeart();
+        }, 800);
+      }
+    }
+
+    typeNextLine();
+
+    function drawHeart() {
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      let t = 0;
+
+      function animate() {
+        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.fillStyle = "pink";
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 2;
+
+        ctx.moveTo(0, 0);
+        for (let i = 0; i < t; i += 0.01) {
+          let x = 16 * Math.sin(i) ** 3;
+          let y = - (13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
+          ctx.lineTo(x * 10, y * 10);
+        }
+
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        t += 0.05;
+        if (t < Math.PI * 2) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+  </script>
+</body>
+</html>
