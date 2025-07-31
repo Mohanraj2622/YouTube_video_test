@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Impress Your Crush ❤️</title>
+  <title>Impress Your Crush with Code 💘</title>
   <style>
     * {
       margin: 0;
@@ -10,38 +10,48 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    body, html {
       height: 100%;
-      background: black;
-      color: white;
       font-family: monospace;
+      background-color: black;
+      color: white;
     }
 
-    .container {
-      display: flex;
-      width: 100%;
+    /* Fake Code Editor */
+    .editor {
       height: 100%;
+      width: 100%;
+      background-color: #1e1e1e;
+      display: flex;
+      flex-direction: column;
     }
 
-    .code-box {
-      width: 100%;
+    .editor-header {
+      background-color: #333;
+      padding: 8px 16px;
+      color: #ccc;
+      font-size: 14px;
+      border-bottom: 1px solid #444;
+    }
+
+    .editor-body {
+      flex: 1;
       padding: 20px;
       overflow-y: auto;
       white-space: pre-wrap;
-      background: #111;
-      border-right: 2px solid #444;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     .output-box {
-      display: none;
-      justify-content: center;
-      align-items: center;
       height: 100%;
       width: 100%;
       background: black;
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
     }
 
     canvas {
@@ -57,10 +67,14 @@
   </style>
 </head>
 <body>
-  <div class="container" id="codeContainer">
-    <div class="code-box" id="codeBox"></div>
+
+  <!-- Fake Code Editor -->
+  <div class="editor" id="editor">
+    <div class="editor-header">crush.py - Python (IDLE)</div>
+    <div class="editor-body" id="codeBox"></div>
   </div>
 
+  <!-- Output Heart -->
   <div class="output-box" id="outputBox">
     <canvas id="heartCanvas" width="600" height="600"></canvas>
   </div>
@@ -83,20 +97,21 @@
     ];
 
     const codeBox = document.getElementById("codeBox");
+    const editor = document.getElementById("editor");
     const outputBox = document.getElementById("outputBox");
     const canvas = document.getElementById("heartCanvas");
     const ctx = canvas.getContext("2d");
+
     let line = 0;
 
     function typeNextLine() {
       if (line < codeLines.length) {
         codeBox.innerHTML += codeLines[line] + "\n";
         line++;
-        setTimeout(typeNextLine, 300);
+        setTimeout(typeNextLine, 250); // delay per line
       } else {
         setTimeout(() => {
-          // Hide code and show full-page heart canvas
-          document.getElementById("codeContainer").style.display = "none";
+          editor.classList.add("hidden");
           outputBox.style.display = "flex";
           drawHeart();
         }, 800);
