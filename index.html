@@ -1,425 +1,628 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Impress Your Crush with Code 💘</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Enhanced Mobile ChatBot</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
-    body, html {
-      height: 100%;
-      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-      background-color: #0d1117;
-      color: #c9d1d9;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
       overflow: hidden;
     }
-    
-    /* VS Code-like Editor */
-    .editor {
-      height: 100vh;
+
+    .chat-container {
       width: 100vw;
-      background-color: #0d1117;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
     }
-    
-    .title-bar {
-      background: linear-gradient(135deg, #1f2937, #374151);
-      height: 30px;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      font-size: 12px;
-      color: #9ca3af;
-      border-bottom: 1px solid #21262d;
-    }
-    
-    .traffic-lights {
-      display: flex;
-      gap: 6px;
-      margin-right: 12px;
-    }
-    
-    .light {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    
-    .light.red { background: #ff5f56; }
-    .light.yellow { background: #ffbd2e; }
-    .light.green { background: #27ca3f; }
-    
-    .tab-bar {
-      background-color: #161b22;
-      height: 35px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #21262d;
-    }
-    
-    .tab {
-      height: 100%;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      background-color: #0d1117;
-      border-right: 1px solid #21262d;
-      color: #f0f6fc;
-      font-size: 13px;
-      position: relative;
-    }
-    
-    .tab::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #58a6ff;
-    }
-    
-    .tab .close {
-      margin-left: 8px;
-      color: #8b949e;
-      cursor: pointer;
-    }
-    
-    .editor-body {
-      flex: 1;
-      display: flex;
-      background-color: #0d1117;
-    }
-    
 
-    
-    .code-area {
-      flex: 1;
-      padding: 20px;
-      font-size: 14px;
-      line-height: 1.6;
-      white-space: pre-wrap;
+    header {
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+      text-align: center;
+      padding: 16px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       position: relative;
     }
-    
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      height: 20px;
-      background-color: #58a6ff;
-      animation: blink 1s infinite;
-      margin-left: 1px;
-    }
-    
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-    
-    .hidden {
-      display: none !important;
-    }
-    
-    .output-container {
-      height: 100vh;
-      width: 100vw;
-      background: radial-gradient(circle at center, #1a1a2e, #16213e, #0f3460);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .particles {
+
+    .status-indicator {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-    
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #ff69b4;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
       border-radius: 50%;
-      animation: float 6s infinite ease-in-out;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-      50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
-    }
-    
-    canvas {
-      border-radius: 10px;
-      box-shadow: 0 0 50px rgba(255, 105, 180, 0.5);
-    }
-    
-    .message {
-      position: absolute;
-      bottom: 50px;
-      font-size: 24px;
-      color: #ff69b4;
-      text-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
       animation: pulse 2s infinite;
     }
-    
+
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-    
-    /* Syntax Highlighting */
-    .keyword { color: #ff7b72; }
-    .func { color: #d2a8ff; }
-    .string { color: #a5d6ff; }
-    .number { color: #79c0ff; }
-    .comment { color: #8b949e; font-style: italic; }
-    .import { color: #ffa657; }
-    .def { color: #ff7b72; }
-    .for { color: #ff7b72; }
-    .in { color: #ff7b72; }
-    .range { color: #d2a8ff; }
+
+    .chat-box {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-box::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      font-size: 0.95rem;
+      animation: slideIn 0.4s ease-out;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .user {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 6px;
+    }
+
+    .bot {
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 6px;
+      backdrop-filter: blur(10px);
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      border-bottom-left-radius: 6px;
+      max-width: 85%;
+      align-self: flex-start;
+      animation: slideIn 0.4s ease-out;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dots div {
+      width: 6px;
+      height: 6px;
+      background: #999;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dots div:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots div:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .input-container {
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    form {
+      display: flex;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      outline: none;
+      color: white;
+      background: transparent;
+      placeholder-color: rgba(255, 255, 255, 0.7);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    button {
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #5a6fd8, #6a42a0);
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 8px;
+      overflow-x: auto;
+    }
+
+    .quick-action {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .quick-action:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .message-time {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .bot .message-time {
+      text-align: left;
+    }
+
+    .welcome-message {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
-  <!-- Realistic Code Editor -->
-  <div class="editor" id="editor">
-    <div class="title-bar">
-      <div class="traffic-lights">
-        <div class="light red"></div>
-        <div class="light yellow"></div>
-        <div class="light green"></div>
-      </div>
-      <span>Visual Studio Code</span>
-    </div>
+  <div class="chat-container">
+    <header>
+      🤖 Enhanced ChatBot
+      <div class="status-indicator"></div>
+    </header>
     
-    <div class="tab-bar">
-      <div class="tab">
-        heart.py
-        <span class="close">×</span>
+    <div class="chat-box" id="chat-box">
+      <div class="welcome-message">
+        👋 Welcome! I'm your enhanced AI assistant.<br>
+        Try asking me about weather, jokes, math, or just chat!
       </div>
     </div>
-    
-    <div class="editor-body">
-      <div class="code-area" id="codeArea">
-        <span class="cursor" id="cursor"></span>
-      </div>
+
+    <div class="quick-actions" id="quick-actions">
+      <div class="quick-action" data-message="Tell me a joke">😄 Joke</div>
+      <div class="quick-action" data-message="What's the weather like?">🌤️ Weather</div>
+      <div class="quick-action" data-message="Help me with math">🧮 Math</div>
+      <div class="quick-action" data-message="Tell me something interesting">🎯 Fun Fact</div>
     </div>
-  </div>
-  
-  <!-- Enhanced Output -->
-  <div class="output-container" id="outputContainer">
-    <div class="particles" id="particles"></div>
-    <canvas id="heartCanvas" width="800" height="600"></canvas>
-    <div class="message">Made with ❤️ for you</div>
+
+    <div class="input-container">
+      <form id="chat-form">
+        <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+        <button type="submit" id="send-btn">➤</button>
+      </form>
+    </div>
   </div>
 
   <script>
-    const codeLines = [
-      `<span class="comment"># Creating something special for you... 💕</span>`,
-      `<span class="import">import</span> math`,
-      `<span class="import">import</span> time`,
-      `<span class="import">from</span> turtle <span class="import">import</span> *`,
-      ``,
-      `<span class="comment"># Set up the canvas</span>`,
-      `<span class="func">speed</span>(<span class="number">0</span>)`,
-      `<span class="func">bgcolor</span>(<span class="string">'black'</span>)`,
-      `<span class="func">pensize</span>(<span class="number">3</span>)`,
-      `<span class="func">shape</span>(<span class="string">'turtle'</span>)`,
-      ``,
-      `<span class="def">def</span> <span class="func">draw_heart</span>():`,
-      `    <span class="comment"># This heart beats for you</span>`,
-      `    <span class="func">color</span>(<span class="string">'red'</span>, <span class="string">'pink'</span>)`,
-      `    <span class="func">begin_fill</span>()`,
-      `    `,
-      `    <span class="comment"># Mathematical heart equation</span>`,
-      `    <span class="for">for</span> i <span class="in">in</span> <span class="range">range</span>(<span class="number">360</span>):`,
-      `        <span class="comment"># Heart parametric equations</span>`,
-      `        t = math.<span class="func">radians</span>(i)`,
-      `        x = <span class="number">16</span> * math.<span class="func">sin</span>(t)**<span class="number">3</span>`,
-      `        y = <span class="number">13</span> * math.<span class="func">cos</span>(t) - <span class="number">5</span> * math.<span class="func">cos</span>(<span class="number">2</span>*t) - <span class="number">2</span> * math.<span class="func">cos</span>(<span class="number">3</span>*t) - math.<span class="func">cos</span>(<span class="number">4</span>*t)`,
-      `        <span class="func">goto</span>(x * <span class="number">10</span>, y * <span class="number">10</span>)`,
-      `    `,
-      `    <span class="func">end_fill</span>()`,
-      `    <span class="func">hideturtle</span>()`,
-      ``,
-      `<span class="comment"># Execute the magic</span>`,
-      `<span class="func">draw_heart</span>()`,
-      `<span class="func">done</span>()`,
-      ``,
-      `<span class="comment"># You make my heart beat faster! 💓</span>`
-    ];
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+    const sendBtn = document.getElementById('send-btn');
+    const quickActions = document.getElementById('quick-actions');
 
-    const codeArea = document.getElementById("codeArea");
-    const cursor = document.getElementById("cursor");
-    const editor = document.getElementById("editor");
-    const outputContainer = document.getElementById("outputContainer");
-    const canvas = document.getElementById("heartCanvas");
-    const ctx = canvas.getContext("2d");
-    
-    let currentLine = 0;
-    let currentChar = 0;
-    let isTyping = false;
+    let conversationHistory = [];
+    let botPersonality = {
+      name: "Enhanced ChatBot",
+      mood: "helpful",
+      knowledge: new Date().getFullYear()
+    };
 
-    // Realistic typing effect
-    function typeCode() {
-      if (currentLine >= codeLines.length) {
-        cursor.style.display = 'none';
-        setTimeout(showOutput, 1500);
-        return;
+    // Quick action handlers
+    quickActions.addEventListener('click', (e) => {
+      if (e.target.classList.contains('quick-action')) {
+        const message = e.target.dataset.message;
+        input.value = message;
+        form.dispatchEvent(new Event('submit'));
       }
+    });
 
-      const line = codeLines[currentLine];
-      const plainText = line.replace(/<[^>]*>/g, ''); // Remove HTML tags for character counting
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      sendBtn.disabled = true;
+      appendMessage('user', userMessage);
+      conversationHistory.push({role: 'user', message: userMessage, time: new Date()});
+      input.value = '';
+
+      showTypingIndicator();
       
-      if (currentChar === 0) {
-        // Start new line
-        codeArea.innerHTML = codeArea.innerHTML.replace('<span class="cursor" id="cursor"></span>', '');
-        if (currentLine > 0) codeArea.innerHTML += '\n';
-      }
+      setTimeout(() => {
+        hideTypingIndicator();
+        generateEnhancedBotReply(userMessage);
+        sendBtn.disabled = false;
+      }, Math.random() * 1000 + 800);
+    });
 
-      if (currentChar < plainText.length) {
-        // Type character by character
-        const charToAdd = plainText[currentChar];
-        
-        // Rebuild the line with proper HTML tags
-        let htmlLine = line;
-        let plainIndex = 0;
-        let result = '';
-        let inTag = false;
-        
-        for (let i = 0; i < htmlLine.length; i++) {
-          if (htmlLine[i] === '<') {
-            inTag = true;
-            result += htmlLine[i];
-          } else if (htmlLine[i] === '>') {
-            inTag = false;
-            result += htmlLine[i];
-          } else if (inTag) {
-            result += htmlLine[i];
-          } else {
-            if (plainIndex < currentChar) {
-              result += htmlLine[i];
-            } else if (plainIndex === currentChar) {
-              result += htmlLine[i];
-              break;
+    function appendMessage(sender, text, showTime = true) {
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+      msg.textContent = text;
+      
+      if (showTime) {
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        msg.appendChild(timeDiv);
+      }
+      
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const indicator = document.createElement('div');
+      indicator.className = 'typing-indicator';
+      indicator.id = 'typing-indicator';
+      indicator.innerHTML = `
+        <div class="typing-dots">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <span>ChatBot is typing...</span>
+      `;
+      chatBox.appendChild(indicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      const indicator = document.getElementById('typing-indicator');
+      if (indicator) indicator.remove();
+    }
+
+    // Comprehensive Knowledge Base
+    const knowledgeBase = {
+      // Science & Technology
+      science: {
+        keywords: ['science', 'physics', 'chemistry', 'biology', 'space', 'planet', 'solar system', 'universe', 'atom', 'molecule', 'gravity', 'light', 'energy', 'dna', 'evolution', 'bacteria', 'virus'],
+        responses: {
+          'physics': "Physics is the study of matter, energy, and their interactions! It helps us understand everything from tiny atoms to massive galaxies. What aspect interests you most? ⚛️",
+          'chemistry': "Chemistry explores how atoms and molecules interact to form everything around us! It's like the recipe book of the universe. Any specific chemical process you're curious about? 🧪",
+          'biology': "Biology is the fascinating study of life! From microscopic bacteria to complex ecosystems, it explains how living things work and evolve. What living thing amazes you most? 🧬",
+          'space': "Space is incredibly vast and mysterious! Our universe contains billions of galaxies, each with billions of stars. The nearest star to us (besides the Sun) is over 4 light-years away! 🌌",
+          'gravity': "Gravity is the force that keeps us grounded and planets in orbit! Einstein showed us it's actually the curvature of spacetime. Without it, everything would float away! 🪐",
+          'evolution': "Evolution explains how species change over time through natural selection. It's how we got the amazing diversity of life on Earth! Humans and chimpanzees share about 98.8% of their DNA! 🐒"
+        }
+      },
+
+      // History & Geography
+      history: {
+        keywords: ['history', 'ancient', 'egypt', 'rome', 'greece', 'war', 'civilization', 'empire', 'king', 'queen', 'president', 'country', 'capital', 'continent', 'ocean', 'mountain', 'river'],
+        responses: {
+          'egypt': "Ancient Egypt was an incredible civilization! They built the pyramids, created hieroglyphics, and mummified pharaohs. The Great Pyramid of Giza was the tallest building for over 3,800 years! 🏺",
+          'rome': "The Roman Empire was massive, stretching across Europe, Africa, and Asia! They gave us roads, aqueducts, the calendar, and many words we still use today. 'Veni, vidi, vici!' 🏛️",
+          'ocean': "Our planet has five major oceans: Pacific (largest), Atlantic, Indian, Southern, and Arctic! The Pacific Ocean alone covers about 46% of Earth's water surface! 🌊",
+          'mountain': "Mountains form through tectonic activity! Mount Everest (29,032 feet) is the tallest, but Mauna Kea in Hawaii is actually taller when measured from its underwater base! 🏔️"
+        }
+      },
+
+      // Animals & Nature
+      animals: {
+        keywords: ['animal', 'dog', 'cat', 'bird', 'fish', 'lion', 'tiger', 'elephant', 'whale', 'dolphin', 'shark', 'bear', 'wolf', 'horse', 'cow', 'chicken', 'snake', 'spider', 'insect', 'butterfly', 'bee'],
+        responses: {
+          'dog': "Dogs are amazing companions! They were the first animals domesticated by humans, about 15,000 years ago. They can learn over 150 words and some can even do math! 🐕",
+          'cat': "Cats are fascinating! They sleep 12-16 hours a day, have excellent night vision, and can rotate their ears 180 degrees. A group of cats is called a 'clowder'! 🐱",
+          'elephant': "Elephants are incredibly intelligent! They have excellent memories, can recognize themselves in mirrors, and mourn their dead. An elephant's trunk has over 40,000 muscles! 🐘",
+          'whale': "Whales are the largest animals ever! Blue whales can reach 100 feet long and weigh 200 tons. Their hearts alone can weigh as much as a car! 🐋",
+          'bee': "Bees are essential pollinators! A single bee colony can contain up to 60,000 bees. They communicate through dancing and can see ultraviolet patterns on flowers! 🐝"
+        }
+      },
+
+      // Technology & Computing
+      technology: {
+        keywords: ['computer', 'internet', 'ai', 'robot', 'software', 'hardware', 'programming', 'code', 'website', 'app', 'phone', 'smartphone', 'tablet', 'laptop'],
+        responses: {
+          'computer': "Computers process information using binary code (0s and 1s)! The first computer, ENIAC, weighed 30 tons. Now we carry more computing power in our pockets! 💻",
+          'internet': "The internet connects billions of devices worldwide! It started as ARPANET in 1969 with just 4 computers. Now over 4.6 billion people use it daily! 🌐",
+          'ai': "AI helps computers learn and make decisions! From recommendation systems to self-driving cars, AI is everywhere. Machine learning lets computers improve from experience! 🤖",
+          'programming': "Programming is like giving instructions to computers! Popular languages include Python, JavaScript, Java, and C++. It's the language of the digital world! 👨‍💻"
+        }
+      },
+
+      // Food & Cooking
+      food: {
+        keywords: ['food', 'cooking', 'recipe', 'pizza', 'pasta', 'burger', 'salad', 'fruit', 'vegetable', 'meat', 'fish', 'chicken', 'rice', 'bread', 'cake', 'chocolate'],
+        responses: {
+          'pizza': "Pizza originated in Naples, Italy! The Margherita pizza was created in 1889 to honor Queen Margherita, using tomatoes, mozzarella, and basil to represent the Italian flag! 🍕",
+          'chocolate': "Chocolate comes from cacao beans! The Aztecs used cacao as currency. Dark chocolate contains antioxidants and can be good for your heart in moderation! 🍫",
+          'cooking': "Cooking is both science and art! Heat transforms proteins, caramelizes sugars, and creates amazing flavors through the Maillard reaction. What's your favorite dish to cook? 👨‍🍳"
+        }
+      },
+
+      // Sports & Games
+      sports: {
+        keywords: ['sport', 'football', 'soccer', 'basketball', 'tennis', 'baseball', 'swimming', 'running', 'olympics', 'game', 'chess', 'video game'],
+        responses: {
+          'soccer': "Soccer (football) is the world's most popular sport! It's played by over 250 million people in 200+ countries. The World Cup is watched by over 3.5 billion people! ⚽",
+          'olympics': "The Olympics bring together athletes from around the world! The ancient Olympics began in Greece in 776 BC. The modern Olympics started in 1896! 🏅",
+          'chess': "Chess is called the 'game of kings'! There are more possible chess games than atoms in the observable universe. The longest game on record lasted 269 moves! ♟️"
+        }
+      },
+
+      // Music & Arts
+      arts: {
+        keywords: ['music', 'song', 'guitar', 'piano', 'art', 'painting', 'drawing', 'movie', 'film', 'book', 'novel', 'poem', 'dance'],
+        responses: {
+          'music': "Music is universal! It activates multiple brain regions and can trigger emotions and memories. Every culture in human history has had some form of music! 🎵",
+          'painting': "Painting is one of humanity's oldest art forms! Cave paintings date back 40,000 years. The Mona Lisa is probably the most famous painting in the world! 🎨",
+          'book': "Books preserve knowledge and stories across time! The oldest known book is the Diamond Sutra from 868 AD. Reading increases vocabulary and empathy! 📚"
+        }
+      }
+    };
+
+    function findBestResponse(userMsg) {
+      const lower = userMsg.toLowerCase();
+      let bestMatch = null;
+      let bestScore = 0;
+
+      // Check each knowledge category
+      for (const [category, data] of Object.entries(knowledgeBase)) {
+        for (const keyword of data.keywords) {
+          if (lower.includes(keyword)) {
+            // Check if we have a specific response for this keyword
+            if (data.responses[keyword]) {
+              return data.responses[keyword];
             }
-            plainIndex++;
+            // Otherwise, use a general response for this category
+            const responses = Object.values(data.responses);
+            return responses[Math.floor(Math.random() * responses.length)];
           }
         }
-        
-        // Update the current line in display
-        const lines = codeArea.innerHTML.split('\n');
-        lines[currentLine] = result;
-        codeArea.innerHTML = lines.join('\n') + '<span class="cursor" id="cursor"></span>';
-        
-        currentChar++;
-        
-        // Variable typing speed for realism
-        let delay = Math.random() * 50 + 30;
-        if (charToAdd === ' ') delay = Math.random() * 100 + 50;
-        if (charToAdd === '\n') delay = 200;
-        
-        setTimeout(typeCode, delay);
-      } else {
-        // Line complete, move to next
-        currentLine++;
-        currentChar = 0;
-        setTimeout(typeCode, Math.random() * 300 + 200);
       }
+
+      return null;
     }
 
-    function showOutput() {
-      editor.classList.add("hidden");
-      outputContainer.style.display = "flex";
-      createParticles();
-      setTimeout(drawAnimatedHeart, 500);
-    }
+    function generateEnhancedBotReply(userMsg) {
+      const lower = userMsg.toLowerCase();
+      let reply = "";
 
-    function createParticles() {
-      const particlesContainer = document.getElementById("particles");
-      for (let i = 0; i < 50; i++) {
-        const particle = document.createElement("div");
-        particle.className = "particle";
-        particle.style.left = Math.random() * 100 + "%";
-        particle.style.animationDelay = Math.random() * 6 + "s";
-        particle.style.animationDuration = (Math.random() * 3 + 3) + "s";
-        particlesContainer.appendChild(particle);
+      // Check knowledge base first
+      const knowledgeResponse = findBestResponse(userMsg);
+      if (knowledgeResponse) {
+        reply = knowledgeResponse;
       }
-    }
-
-    function drawAnimatedHeart() {
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      let t = 0;
-      let scale = 0;
       
-      function animate() {
-        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
-        
-        // Create gradient
-        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 200);
-        gradient.addColorStop(0, '#ff69b4');
-        gradient.addColorStop(0.5, '#ff1493');
-        gradient.addColorStop(1, '#dc143c');
-        
-        ctx.fillStyle = gradient;
-        ctx.strokeStyle = '#ff69b4';
-        ctx.lineWidth = 3;
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#ff69b4';
-        
-        ctx.beginPath();
-        
-        // Heart equation with animation
-        for (let i = 0; i <= t; i += 0.01) {
-          const x = 16 * Math.sin(i) ** 3;
-          const y = -(13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
+      // Greetings
+      else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+        const greetings = [
+          "Hello! I'm excited to help you today! 😊",
+          "Hi there! What's on your mind?",
+          "Hey! Ready to chat about anything you'd like!",
+          "Hello! I'm here and ready to assist you!"
+        ];
+        reply = greetings[Math.floor(Math.random() * greetings.length)];
+      }
+      
+      // Identity questions
+      else if (lower.includes('name') || lower.includes('who are you')) {
+        reply = `I'm ${botPersonality.name}, your enhanced AI assistant! I have knowledge about science, history, animals, technology, food, sports, arts, and much more. What would you like to explore?`;
+      }
+      
+      // Jokes
+      else if (lower.includes('joke') || lower.includes('funny')) {
+        const jokes = [
+          "Why don't scientists trust atoms? Because they make up everything! 😄",
+          "I told my computer a joke about UDP... I'm not sure if it got it! 💻",
+          "Why did the robot go on a diet? It had a byte problem! 🤖",
+          "What do you call a fake noodle? An impasta! 🍝",
+          "Why don't programmers like nature? It has too many bugs! 🐛",
+          "Why did the math book look so sad? Because it had too many problems! 📚",
+          "What do you call a sleeping bull? A bulldozer! 🐂",
+          "Why don't eggs tell jokes? They'd crack each other up! 🥚"
+        ];
+        reply = jokes[Math.floor(Math.random() * jokes.length)];
+      }
+      
+      // Weather
+      else if (lower.includes('weather')) {
+        const weatherResponses = [
+          "I don't have real-time weather data, but I hope you're having beautiful weather! ☀️ You could check your local weather app for current conditions.",
+          "While I can't check the current weather, I'd recommend dressing in layers - it's always good to be prepared! 🌤️",
+          "I wish I could tell you the weather! For accurate forecasts, try your phone's weather app or weather.com 🌦️"
+        ];
+        reply = weatherResponses[Math.floor(Math.random() * weatherResponses.length)];
+      }
+      
+      // Math calculations
+      else if (lower.includes('math') || lower.includes('calculate') || lower.includes('+') || lower.includes('-') || lower.includes('*') || lower.includes('/')) {
+        const mathMatch = userMsg.match(/(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)/);
+        if (mathMatch) {
+          const [, num1, operator, num2] = mathMatch;
+          const a = parseFloat(num1);
+          const b = parseFloat(num2);
+          let result;
           
-          if (i === 0) {
-            ctx.moveTo(x * scale, y * scale);
-          } else {
-            ctx.lineTo(x * scale, y * scale);
+          switch(operator) {
+            case '+': result = a + b; break;
+            case '-': result = a - b; break;
+            case '*': result = a * b; break;
+            case '/': result = b !== 0 ? a / b : 'Cannot divide by zero'; break;
+            default: result = 'Invalid operation';
           }
-        }
-        
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        
-        // Animate parameters
-        t += 0.1;
-        if (scale < 8) scale += 0.1;
-        
-        // Pulsing effect
-        const pulse = Math.sin(Date.now() * 0.005) * 0.1 + 1;
-        ctx.save();
-        ctx.scale(pulse, pulse);
-        ctx.restore();
-        
-        if (t < Math.PI * 2 + 1) {
-          requestAnimationFrame(animate);
+          
+          reply = `${a} ${operator} ${b} = ${result} 🧮`;
         } else {
-          // Heart complete, add final touches
-          ctx.font = '24px monospace';
-          ctx.fillStyle = '#fff';
-          ctx.textAlign = 'center';
-          ctx.fillText('💕 For my Love 💕', 0, 250);
+          reply = "I can help with basic math! Try something like '25 + 17' or '100 / 4'. I also know lots about mathematics - it's the language of the universe! 📊";
         }
       }
       
-      animate();
+      // Time and date
+      else if (lower.includes('time') || lower.includes('date')) {
+        const now = new Date();
+        reply = `It's currently ${now.toLocaleTimeString()} on ${now.toLocaleDateString()}. Time is relative according to Einstein - it can actually slow down or speed up! ⏰`;
+      }
+      
+      // Help
+      else if (lower.includes('help') || lower.includes('what can you do')) {
+        reply = "I can help you with many things! 🌟\n\n• Science, history, and geography\n• Animals and nature facts\n• Technology and programming\n• Food and cooking tips\n• Sports and games\n• Arts and music\n• Math calculations\n• Fun facts and jokes\n• General conversations\n\nJust ask me anything you're curious about!";
+      }
+      
+      // Fun facts
+      else if (lower.includes('fact') || lower.includes('interesting')) {
+        const facts = [
+          "Did you know? Octopuses have three hearts and blue blood! 🐙",
+          "Fun fact: A group of flamingos is called a 'flamboyance'! 🦩",
+          "Amazing: Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs! 🍯",
+          "Cool fact: A day on Venus is longer than its year! 🪐",
+          "Incredible: There are more possible games of chess than atoms in the observable universe! ♟️",
+          "Bananas are berries, but strawberries aren't! 🍌",
+          "A single cloud can weigh more than a million pounds! ☁️",
+          "Your brain uses about 20% of your body's energy! 🧠"
+        ];
+        reply = facts[Math.floor(Math.random() * facts.length)];
+      }
+      
+      // Goodbyes
+      else if (lower.includes('bye') || lower.includes('goodbye')) {
+        const farewells = [
+          "Goodbye! It was great chatting with you! 👋",
+          "See you later! Feel free to come back anytime! 😊",
+          "Farewell! Hope to talk again soon! ✨",
+          "Take care! Thanks for the lovely conversation! 🌟"
+        ];
+        reply = farewells[Math.floor(Math.random() * farewells.length)];
+      }
+      
+      // Status check
+      else if (lower.includes('how are you') || lower.includes('how do you feel')) {
+        const statusResponses = [
+          "I'm doing wonderfully! Ready to help and learn from our conversation! 😊",
+          "I'm functioning perfectly and excited to chat with you! How are you doing?",
+          "I'm in great spirits! Every conversation teaches me something new. How's your day going?",
+          "I'm feeling quite chatty today! Thanks for asking. What's new with you?"
+        ];
+        reply = statusResponses[Math.floor(Math.random() * statusResponses.length)];
+      }
+      
+      // Feelings
+      else if (lower.includes('love') || lower.includes('like')) {
+        reply = "That's sweet! I enjoy our conversations and learning about what interests you. What do you love or like most? 💝";
+      }
+      
+      // Default responses - now more helpful
+      else {
+        const fallbacks = [
+          "That's an interesting topic! While I might not have specific information about that, I'd love to discuss it more. Can you tell me what specifically interests you about it? 🤔",
+          "I'm always eager to learn! Could you share more details so I can better understand what you're looking for? 💭",
+          "That sounds fascinating! I have knowledge about science, history, technology, animals, and many other topics. Is there a specific aspect you'd like to explore? 🌟",
+          "I'd love to help you with that! I know about many subjects - try asking me about science, history, animals, technology, or anything else that interests you! 😊",
+          "Interesting question! I have a broad knowledge base covering science, history, geography, animals, technology, and more. What area would you like to explore? 🧠"
+        ];
+        reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+      }
+
+      conversationHistory.push({role: 'bot', message: reply, time: new Date()});
+      appendMessage('bot', reply);
     }
 
-    // Start the show
-    setTimeout(typeCode, 1000);
+    // Auto-focus input
+    input.focus();
+
+    // Enter key handling
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event('submit'));
+      }
+    });
   </script>
 </body>
 </html>
