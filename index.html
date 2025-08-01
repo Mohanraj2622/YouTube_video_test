@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +17,7 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       height: 100vh;
       overflow: hidden;
+      color: #333;
     }
 
     .chat-container {
@@ -37,6 +39,7 @@
       backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       position: relative;
+      flex-shrink: 0;
     }
 
     .status-indicator {
@@ -64,6 +67,7 @@
       flex-direction: column;
       gap: 12px;
       scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
     }
 
     .chat-box::-webkit-scrollbar {
@@ -128,6 +132,7 @@
       max-width: 85%;
       align-self: flex-start;
       animation: slideIn 0.4s ease-out;
+      color: #333;
     }
 
     .typing-dots {
@@ -162,6 +167,7 @@
       background: rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(20px);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
     }
 
     form {
@@ -180,7 +186,6 @@
       outline: none;
       color: white;
       background: transparent;
-      placeholder-color: rgba(255, 255, 255, 0.7);
     }
 
     input::placeholder {
@@ -218,8 +223,10 @@
     .quick-actions {
       display: flex;
       gap: 8px;
-      padding: 0 16px 8px;
+      padding: 8px 16px;
       overflow-x: auto;
+      background: rgba(0, 0, 0, 0.05);
+      flex-shrink: 0;
     }
 
     .quick-action {
@@ -232,6 +239,7 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .quick-action:hover {
@@ -244,6 +252,7 @@
       opacity: 0.7;
       margin-top: 4px;
       text-align: right;
+      color: inherit;
     }
 
     .bot .message-time {
@@ -252,23 +261,26 @@
 
     .welcome-message {
       text-align: center;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       padding: 20px;
       font-size: 0.9rem;
       line-height: 1.6;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      margin: 8px 0;
     }
   </style>
 </head>
 <body>
   <div class="chat-container">
     <header>
-      🤖 Enhanced ChatBot
+      🤖 AI ChatBot
       <div class="status-indicator"></div>
     </header>
     
     <div class="chat-box" id="chat-box">
       <div class="welcome-message">
-        👋 Welcome! I'm your enhanced AI assistant.<br>
+        👋 Welcome! I'm your AI assistant.<br>
         Try asking me about weather, jokes, math, or just chat!
       </div>
     </div>
@@ -289,339 +301,350 @@
   </div>
 
   <script>
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('user-input');
-    const chatBox = document.getElementById('chat-box');
-    const sendBtn = document.getElementById('send-btn');
-    const quickActions = document.getElementById('quick-actions');
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('user-input');
+      const chatBox = document.getElementById('chat-box');
+      const sendBtn = document.getElementById('send-btn');
+      const quickActions = document.getElementById('quick-actions');
 
-    let conversationHistory = [];
-    let botPersonality = {
-      name: "Enhanced ChatBot",
-      mood: "helpful",
-      knowledge: new Date().getFullYear()
-    };
+      let conversationHistory = [];
+      let botPersonality = {
+        name: "AI ChatBot",
+        mood: "helpful",
+        knowledge: new Date().getFullYear()
+      };
 
-    // Quick action handlers
-    quickActions.addEventListener('click', (e) => {
-      if (e.target.classList.contains('quick-action')) {
-        const message = e.target.dataset.message;
-        input.value = message;
-        form.dispatchEvent(new Event('submit'));
-      }
-    });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const userMessage = input.value.trim();
-      if (!userMessage) return;
-
-      sendBtn.disabled = true;
-      appendMessage('user', userMessage);
-      conversationHistory.push({role: 'user', message: userMessage, time: new Date()});
-      input.value = '';
-
-      showTypingIndicator();
-      
-      setTimeout(() => {
-        hideTypingIndicator();
-        generateEnhancedBotReply(userMessage);
-        sendBtn.disabled = false;
-      }, Math.random() * 1000 + 800);
-    });
-
-    function appendMessage(sender, text, showTime = true) {
-      const msg = document.createElement('div');
-      msg.className = `message ${sender}`;
-      msg.textContent = text;
-      
-      if (showTime) {
-        const timeDiv = document.createElement('div');
-        timeDiv.className = 'message-time';
-        timeDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        msg.appendChild(timeDiv);
-      }
-      
-      chatBox.appendChild(msg);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function showTypingIndicator() {
-      const indicator = document.createElement('div');
-      indicator.className = 'typing-indicator';
-      indicator.id = 'typing-indicator';
-      indicator.innerHTML = `
-        <div class="typing-dots">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        <span>ChatBot is typing...</span>
-      `;
-      chatBox.appendChild(indicator);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function hideTypingIndicator() {
-      const indicator = document.getElementById('typing-indicator');
-      if (indicator) indicator.remove();
-    }
-
-    // Comprehensive Knowledge Base
-    const knowledgeBase = {
-      // Science & Technology
-      science: {
-        keywords: ['science', 'physics', 'chemistry', 'biology', 'space', 'planet', 'solar system', 'universe', 'atom', 'molecule', 'gravity', 'light', 'energy', 'dna', 'evolution', 'bacteria', 'virus'],
-        responses: {
-          'physics': "Physics is the study of matter, energy, and their interactions! It helps us understand everything from tiny atoms to massive galaxies. What aspect interests you most? ⚛️",
-          'chemistry': "Chemistry explores how atoms and molecules interact to form everything around us! It's like the recipe book of the universe. Any specific chemical process you're curious about? 🧪",
-          'biology': "Biology is the fascinating study of life! From microscopic bacteria to complex ecosystems, it explains how living things work and evolve. What living thing amazes you most? 🧬",
-          'space': "Space is incredibly vast and mysterious! Our universe contains billions of galaxies, each with billions of stars. The nearest star to us (besides the Sun) is over 4 light-years away! 🌌",
-          'gravity': "Gravity is the force that keeps us grounded and planets in orbit! Einstein showed us it's actually the curvature of spacetime. Without it, everything would float away! 🪐",
-          'evolution': "Evolution explains how species change over time through natural selection. It's how we got the amazing diversity of life on Earth! Humans and chimpanzees share about 98.8% of their DNA! 🐒"
+      // Quick action handlers
+      quickActions.addEventListener('click', (e) => {
+        if (e.target.classList.contains('quick-action')) {
+          const message = e.target.dataset.message;
+          input.value = message;
+          form.dispatchEvent(new Event('submit'));
         }
-      },
+      });
 
-      // History & Geography
-      history: {
-        keywords: ['history', 'ancient', 'egypt', 'rome', 'greece', 'war', 'civilization', 'empire', 'king', 'queen', 'president', 'country', 'capital', 'continent', 'ocean', 'mountain', 'river'],
-        responses: {
-          'egypt': "Ancient Egypt was an incredible civilization! They built the pyramids, created hieroglyphics, and mummified pharaohs. The Great Pyramid of Giza was the tallest building for over 3,800 years! 🏺",
-          'rome': "The Roman Empire was massive, stretching across Europe, Africa, and Asia! They gave us roads, aqueducts, the calendar, and many words we still use today. 'Veni, vidi, vici!' 🏛️",
-          'ocean': "Our planet has five major oceans: Pacific (largest), Atlantic, Indian, Southern, and Arctic! The Pacific Ocean alone covers about 46% of Earth's water surface! 🌊",
-          'mountain': "Mountains form through tectonic activity! Mount Everest (29,032 feet) is the tallest, but Mauna Kea in Hawaii is actually taller when measured from its underwater base! 🏔️"
-        }
-      },
-
-      // Animals & Nature
-      animals: {
-        keywords: ['animal', 'dog', 'cat', 'bird', 'fish', 'lion', 'tiger', 'elephant', 'whale', 'dolphin', 'shark', 'bear', 'wolf', 'horse', 'cow', 'chicken', 'snake', 'spider', 'insect', 'butterfly', 'bee'],
-        responses: {
-          'dog': "Dogs are amazing companions! They were the first animals domesticated by humans, about 15,000 years ago. They can learn over 150 words and some can even do math! 🐕",
-          'cat': "Cats are fascinating! They sleep 12-16 hours a day, have excellent night vision, and can rotate their ears 180 degrees. A group of cats is called a 'clowder'! 🐱",
-          'elephant': "Elephants are incredibly intelligent! They have excellent memories, can recognize themselves in mirrors, and mourn their dead. An elephant's trunk has over 40,000 muscles! 🐘",
-          'whale': "Whales are the largest animals ever! Blue whales can reach 100 feet long and weigh 200 tons. Their hearts alone can weigh as much as a car! 🐋",
-          'bee': "Bees are essential pollinators! A single bee colony can contain up to 60,000 bees. They communicate through dancing and can see ultraviolet patterns on flowers! 🐝"
-        }
-      },
-
-      // Technology & Computing
-      technology: {
-        keywords: ['computer', 'internet', 'ai', 'robot', 'software', 'hardware', 'programming', 'code', 'website', 'app', 'phone', 'smartphone', 'tablet', 'laptop'],
-        responses: {
-          'computer': "Computers process information using binary code (0s and 1s)! The first computer, ENIAC, weighed 30 tons. Now we carry more computing power in our pockets! 💻",
-          'internet': "The internet connects billions of devices worldwide! It started as ARPANET in 1969 with just 4 computers. Now over 4.6 billion people use it daily! 🌐",
-          'ai': "AI helps computers learn and make decisions! From recommendation systems to self-driving cars, AI is everywhere. Machine learning lets computers improve from experience! 🤖",
-          'programming': "Programming is like giving instructions to computers! Popular languages include Python, JavaScript, Java, and C++. It's the language of the digital world! 👨‍💻"
-        }
-      },
-
-      // Food & Cooking
-      food: {
-        keywords: ['food', 'cooking', 'recipe', 'pizza', 'pasta', 'burger', 'salad', 'fruit', 'vegetable', 'meat', 'fish', 'chicken', 'rice', 'bread', 'cake', 'chocolate'],
-        responses: {
-          'pizza': "Pizza originated in Naples, Italy! The Margherita pizza was created in 1889 to honor Queen Margherita, using tomatoes, mozzarella, and basil to represent the Italian flag! 🍕",
-          'chocolate': "Chocolate comes from cacao beans! The Aztecs used cacao as currency. Dark chocolate contains antioxidants and can be good for your heart in moderation! 🍫",
-          'cooking': "Cooking is both science and art! Heat transforms proteins, caramelizes sugars, and creates amazing flavors through the Maillard reaction. What's your favorite dish to cook? 👨‍🍳"
-        }
-      },
-
-      // Sports & Games
-      sports: {
-        keywords: ['sport', 'football', 'soccer', 'basketball', 'tennis', 'baseball', 'swimming', 'running', 'olympics', 'game', 'chess', 'video game'],
-        responses: {
-          'soccer': "Soccer (football) is the world's most popular sport! It's played by over 250 million people in 200+ countries. The World Cup is watched by over 3.5 billion people! ⚽",
-          'olympics': "The Olympics bring together athletes from around the world! The ancient Olympics began in Greece in 776 BC. The modern Olympics started in 1896! 🏅",
-          'chess': "Chess is called the 'game of kings'! There are more possible chess games than atoms in the observable universe. The longest game on record lasted 269 moves! ♟️"
-        }
-      },
-
-      // Music & Arts
-      arts: {
-        keywords: ['music', 'song', 'guitar', 'piano', 'art', 'painting', 'drawing', 'movie', 'film', 'book', 'novel', 'poem', 'dance'],
-        responses: {
-          'music': "Music is universal! It activates multiple brain regions and can trigger emotions and memories. Every culture in human history has had some form of music! 🎵",
-          'painting': "Painting is one of humanity's oldest art forms! Cave paintings date back 40,000 years. The Mona Lisa is probably the most famous painting in the world! 🎨",
-          'book': "Books preserve knowledge and stories across time! The oldest known book is the Diamond Sutra from 868 AD. Reading increases vocabulary and empathy! 📚"
-        }
-      }
-    };
-
-    function findBestResponse(userMsg) {
-      const lower = userMsg.toLowerCase();
-      let bestMatch = null;
-      let bestScore = 0;
-
-      // Check each knowledge category
-      for (const [category, data] of Object.entries(knowledgeBase)) {
-        for (const keyword of data.keywords) {
-          if (lower.includes(keyword)) {
-            // Check if we have a specific response for this keyword
-            if (data.responses[keyword]) {
-              return data.responses[keyword];
-            }
-            // Otherwise, use a general response for this category
-            const responses = Object.values(data.responses);
-            return responses[Math.floor(Math.random() * responses.length)];
-          }
-        }
-      }
-
-      return null;
-    }
-
-    function generateEnhancedBotReply(userMsg) {
-      const lower = userMsg.toLowerCase();
-      let reply = "";
-
-      // Check knowledge base first
-      const knowledgeResponse = findBestResponse(userMsg);
-      if (knowledgeResponse) {
-        reply = knowledgeResponse;
-      }
-      
-      // Greetings
-      else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-        const greetings = [
-          "Hello! I'm excited to help you today! 😊",
-          "Hi there! What's on your mind?",
-          "Hey! Ready to chat about anything you'd like!",
-          "Hello! I'm here and ready to assist you!"
-        ];
-        reply = greetings[Math.floor(Math.random() * greetings.length)];
-      }
-      
-      // Identity questions
-      else if (lower.includes('name') || lower.includes('who are you')) {
-        reply = `I'm ${botPersonality.name}, your enhanced AI assistant! I have knowledge about science, history, animals, technology, food, sports, arts, and much more. What would you like to explore?`;
-      }
-      
-      // Jokes
-      else if (lower.includes('joke') || lower.includes('funny')) {
-        const jokes = [
-          "Why don't scientists trust atoms? Because they make up everything! 😄",
-          "I told my computer a joke about UDP... I'm not sure if it got it! 💻",
-          "Why did the robot go on a diet? It had a byte problem! 🤖",
-          "What do you call a fake noodle? An impasta! 🍝",
-          "Why don't programmers like nature? It has too many bugs! 🐛",
-          "Why did the math book look so sad? Because it had too many problems! 📚",
-          "What do you call a sleeping bull? A bulldozer! 🐂",
-          "Why don't eggs tell jokes? They'd crack each other up! 🥚"
-        ];
-        reply = jokes[Math.floor(Math.random() * jokes.length)];
-      }
-      
-      // Weather
-      else if (lower.includes('weather')) {
-        const weatherResponses = [
-          "I don't have real-time weather data, but I hope you're having beautiful weather! ☀️ You could check your local weather app for current conditions.",
-          "While I can't check the current weather, I'd recommend dressing in layers - it's always good to be prepared! 🌤️",
-          "I wish I could tell you the weather! For accurate forecasts, try your phone's weather app or weather.com 🌦️"
-        ];
-        reply = weatherResponses[Math.floor(Math.random() * weatherResponses.length)];
-      }
-      
-      // Math calculations
-      else if (lower.includes('math') || lower.includes('calculate') || lower.includes('+') || lower.includes('-') || lower.includes('*') || lower.includes('/')) {
-        const mathMatch = userMsg.match(/(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)/);
-        if (mathMatch) {
-          const [, num1, operator, num2] = mathMatch;
-          const a = parseFloat(num1);
-          const b = parseFloat(num2);
-          let result;
-          
-          switch(operator) {
-            case '+': result = a + b; break;
-            case '-': result = a - b; break;
-            case '*': result = a * b; break;
-            case '/': result = b !== 0 ? a / b : 'Cannot divide by zero'; break;
-            default: result = 'Invalid operation';
-          }
-          
-          reply = `${a} ${operator} ${b} = ${result} 🧮`;
-        } else {
-          reply = "I can help with basic math! Try something like '25 + 17' or '100 / 4'. I also know lots about mathematics - it's the language of the universe! 📊";
-        }
-      }
-      
-      // Time and date
-      else if (lower.includes('time') || lower.includes('date')) {
-        const now = new Date();
-        reply = `It's currently ${now.toLocaleTimeString()} on ${now.toLocaleDateString()}. Time is relative according to Einstein - it can actually slow down or speed up! ⏰`;
-      }
-      
-      // Help
-      else if (lower.includes('help') || lower.includes('what can you do')) {
-        reply = "I can help you with many things! 🌟\n\n• Science, history, and geography\n• Animals and nature facts\n• Technology and programming\n• Food and cooking tips\n• Sports and games\n• Arts and music\n• Math calculations\n• Fun facts and jokes\n• General conversations\n\nJust ask me anything you're curious about!";
-      }
-      
-      // Fun facts
-      else if (lower.includes('fact') || lower.includes('interesting')) {
-        const facts = [
-          "Did you know? Octopuses have three hearts and blue blood! 🐙",
-          "Fun fact: A group of flamingos is called a 'flamboyance'! 🦩",
-          "Amazing: Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs! 🍯",
-          "Cool fact: A day on Venus is longer than its year! 🪐",
-          "Incredible: There are more possible games of chess than atoms in the observable universe! ♟️",
-          "Bananas are berries, but strawberries aren't! 🍌",
-          "A single cloud can weigh more than a million pounds! ☁️",
-          "Your brain uses about 20% of your body's energy! 🧠"
-        ];
-        reply = facts[Math.floor(Math.random() * facts.length)];
-      }
-      
-      // Goodbyes
-      else if (lower.includes('bye') || lower.includes('goodbye')) {
-        const farewells = [
-          "Goodbye! It was great chatting with you! 👋",
-          "See you later! Feel free to come back anytime! 😊",
-          "Farewell! Hope to talk again soon! ✨",
-          "Take care! Thanks for the lovely conversation! 🌟"
-        ];
-        reply = farewells[Math.floor(Math.random() * farewells.length)];
-      }
-      
-      // Status check
-      else if (lower.includes('how are you') || lower.includes('how do you feel')) {
-        const statusResponses = [
-          "I'm doing wonderfully! Ready to help and learn from our conversation! 😊",
-          "I'm functioning perfectly and excited to chat with you! How are you doing?",
-          "I'm in great spirits! Every conversation teaches me something new. How's your day going?",
-          "I'm feeling quite chatty today! Thanks for asking. What's new with you?"
-        ];
-        reply = statusResponses[Math.floor(Math.random() * statusResponses.length)];
-      }
-      
-      // Feelings
-      else if (lower.includes('love') || lower.includes('like')) {
-        reply = "That's sweet! I enjoy our conversations and learning about what interests you. What do you love or like most? 💝";
-      }
-      
-      // Default responses - now more helpful
-      else {
-        const fallbacks = [
-          "That's an interesting topic! While I might not have specific information about that, I'd love to discuss it more. Can you tell me what specifically interests you about it? 🤔",
-          "I'm always eager to learn! Could you share more details so I can better understand what you're looking for? 💭",
-          "That sounds fascinating! I have knowledge about science, history, technology, animals, and many other topics. Is there a specific aspect you'd like to explore? 🌟",
-          "I'd love to help you with that! I know about many subjects - try asking me about science, history, animals, technology, or anything else that interests you! 😊",
-          "Interesting question! I have a broad knowledge base covering science, history, geography, animals, technology, and more. What area would you like to explore? 🧠"
-        ];
-        reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-      }
-
-      conversationHistory.push({role: 'bot', message: reply, time: new Date()});
-      appendMessage('bot', reply);
-    }
-
-    // Auto-focus input
-    input.focus();
-
-    // Enter key handling
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
-        form.dispatchEvent(new Event('submit'));
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
+
+        sendBtn.disabled = true;
+        appendMessage('user', userMessage);
+        conversationHistory.push({role: 'user', message: userMessage, time: new Date()});
+        input.value = '';
+
+        showTypingIndicator();
+        
+        setTimeout(() => {
+          hideTypingIndicator();
+          generateEnhancedBotReply(userMessage);
+          sendBtn.disabled = false;
+          input.focus();
+        }, Math.random() * 1000 + 800);
+      });
+
+      function appendMessage(sender, text, showTime = true) {
+        const msg = document.createElement('div');
+        msg.className = `message ${sender}`;
+        msg.textContent = text;
+        
+        if (showTime) {
+          const timeDiv = document.createElement('div');
+          timeDiv.className = 'message-time';
+          timeDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          msg.appendChild(timeDiv);
+        }
+        
+        chatBox.appendChild(msg);
+        scrollToBottom();
       }
+
+      function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typing-indicator';
+        indicator.innerHTML = `
+          <div class="typing-dots">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <span>ChatBot is typing...</span>
+        `;
+        chatBox.appendChild(indicator);
+        scrollToBottom();
+      }
+
+      function hideTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+      }
+
+      // Comprehensive Knowledge Base
+      const knowledgeBase = {
+        // Science & Technology
+        science: {
+          keywords: ['science', 'physics', 'chemistry', 'biology', 'space', 'planet', 'solar system', 'universe', 'atom', 'molecule', 'gravity', 'light', 'energy', 'dna', 'evolution', 'bacteria', 'virus'],
+          responses: {
+            'physics': "Physics is the study of matter, energy, and their interactions! It helps us understand everything from tiny atoms to massive galaxies. What aspect interests you most? ⚛️",
+            'chemistry': "Chemistry explores how atoms and molecules interact to form everything around us! It's like the recipe book of the universe. Any specific chemical process you're curious about? 🧪",
+            'biology': "Biology is the fascinating study of life! From microscopic bacteria to complex ecosystems, it explains how living things work and evolve. What living thing amazes you most? 🧬",
+            'space': "Space is incredibly vast and mysterious! Our universe contains billions of galaxies, each with billions of stars. The nearest star to us (besides the Sun) is over 4 light-years away! 🌌",
+            'gravity': "Gravity is the force that keeps us grounded and planets in orbit! Einstein showed us it's actually the curvature of spacetime. Without it, everything would float away! 🪐",
+            'evolution': "Evolution explains how species change over time through natural selection. It's how we got the amazing diversity of life on Earth! Humans and chimpanzees share about 98.8% of their DNA! 🐒"
+          }
+        },
+
+        // History & Geography
+        history: {
+          keywords: ['history', 'ancient', 'egypt', 'rome', 'greece', 'war', 'civilization', 'empire', 'king', 'queen', 'president', 'country', 'capital', 'continent', 'ocean', 'mountain', 'river'],
+          responses: {
+            'egypt': "Ancient Egypt was an incredible civilization! They built the pyramids, created hieroglyphics, and mummified pharaohs. The Great Pyramid of Giza was the tallest building for over 3,800 years! 🏺",
+            'rome': "The Roman Empire was massive, stretching across Europe, Africa, and Asia! They gave us roads, aqueducts, the calendar, and many words we still use today. 'Veni, vidi, vici!' 🏛️",
+            'ocean': "Our planet has five major oceans: Pacific (largest), Atlantic, Indian, Southern, and Arctic! The Pacific Ocean alone covers about 46% of Earth's water surface! 🌊",
+            'mountain': "Mountains form through tectonic activity! Mount Everest (29,032 feet) is the tallest, but Mauna Kea in Hawaii is actually taller when measured from its underwater base! 🏔️"
+          }
+        },
+
+        // Animals & Nature
+        animals: {
+          keywords: ['animal', 'dog', 'cat', 'bird', 'fish', 'lion', 'tiger', 'elephant', 'whale', 'dolphin', 'shark', 'bear', 'wolf', 'horse', 'cow', 'chicken', 'snake', 'spider', 'insect', 'butterfly', 'bee'],
+          responses: {
+            'dog': "Dogs are amazing companions! They were the first animals domesticated by humans, about 15,000 years ago. They can learn over 150 words and some can even do math! 🐕",
+            'cat': "Cats are fascinating! They sleep 12-16 hours a day, have excellent night vision, and can rotate their ears 180 degrees. A group of cats is called a 'clowder'! 🐱",
+            'elephant': "Elephants are incredibly intelligent! They have excellent memories, can recognize themselves in mirrors, and mourn their dead. An elephant's trunk has over 40,000 muscles! 🐘",
+            'whale': "Whales are the largest animals ever! Blue whales can reach 100 feet long and weigh 200 tons. Their hearts alone can weigh as much as a car! 🐋",
+            'bee': "Bees are essential pollinators! A single bee colony can contain up to 60,000 bees. They communicate through dancing and can see ultraviolet patterns on flowers! 🐝"
+          }
+        },
+
+        // Technology & Computing
+        technology: {
+          keywords: ['computer', 'internet', 'ai', 'robot', 'software', 'hardware', 'programming', 'code', 'website', 'app', 'phone', 'smartphone', 'tablet', 'laptop'],
+          responses: {
+            'computer': "Computers process information using binary code (0s and 1s)! The first computer, ENIAC, weighed 30 tons. Now we carry more computing power in our pockets! 💻",
+            'internet': "The internet connects billions of devices worldwide! It started as ARPANET in 1969 with just 4 computers. Now over 4.6 billion people use it daily! 🌐",
+            'ai': "AI helps computers learn and make decisions! From recommendation systems to self-driving cars, AI is everywhere. Machine learning lets computers improve from experience! 🤖",
+            'programming': "Programming is like giving instructions to computers! Popular languages include Python, JavaScript, Java, and C++. It's the language of the digital world! 👨‍💻"
+          }
+        },
+
+        // Food & Cooking
+        food: {
+          keywords: ['food', 'cooking', 'recipe', 'pizza', 'pasta', 'burger', 'salad', 'fruit', 'vegetable', 'meat', 'fish', 'chicken', 'rice', 'bread', 'cake', 'chocolate'],
+          responses: {
+            'pizza': "Pizza originated in Naples, Italy! The Margherita pizza was created in 1889 to honor Queen Margherita, using tomatoes, mozzarella, and basil to represent the Italian flag! 🍕",
+            'chocolate': "Chocolate comes from cacao beans! The Aztecs used cacao as currency. Dark chocolate contains antioxidants and can be good for your heart in moderation! 🍫",
+            'cooking': "Cooking is both science and art! Heat transforms proteins, caramelizes sugars, and creates amazing flavors through the Maillard reaction. What's your favorite dish to cook? 👨‍🍳"
+          }
+        },
+
+        // Sports & Games
+        sports: {
+          keywords: ['sport', 'football', 'soccer', 'basketball', 'tennis', 'baseball', 'swimming', 'running', 'olympics', 'game', 'chess', 'video game'],
+          responses: {
+            'soccer': "Soccer (football) is the world's most popular sport! It's played by over 250 million people in 200+ countries. The World Cup is watched by over 3.5 billion people! ⚽",
+            'olympics': "The Olympics bring together athletes from around the world! The ancient Olympics began in Greece in 776 BC. The modern Olympics started in 1896! 🏅",
+            'chess': "Chess is called the 'game of kings'! There are more possible chess games than atoms in the observable universe. The longest game on record lasted 269 moves! ♟️"
+          }
+        },
+
+        // Music & Arts
+        arts: {
+          keywords: ['music', 'song', 'guitar', 'piano', 'art', 'painting', 'drawing', 'movie', 'film', 'book', 'novel', 'poem', 'dance'],
+          responses: {
+            'music': "Music is universal! It activates multiple brain regions and can trigger emotions and memories. Every culture in human history has had some form of music! 🎵",
+            'painting': "Painting is one of humanity's oldest art forms! Cave paintings date back 40,000 years. The Mona Lisa is probably the most famous painting in the world! 🎨",
+            'book': "Books preserve knowledge and stories across time! The oldest known book is the Diamond Sutra from 868 AD. Reading increases vocabulary and empathy! 📚"
+          }
+        }
+      };
+
+      function findBestResponse(userMsg) {
+        const lower = userMsg.toLowerCase();
+        let bestMatch = null;
+        let bestScore = 0;
+
+        // Check each knowledge category
+        for (const [category, data] of Object.entries(knowledgeBase)) {
+          for (const keyword of data.keywords) {
+            if (lower.includes(keyword)) {
+              // Check if we have a specific response for this keyword
+              if (data.responses[keyword]) {
+                return data.responses[keyword];
+              }
+              // Otherwise, use a general response for this category
+              const responses = Object.values(data.responses);
+              return responses[Math.floor(Math.random() * responses.length)];
+            }
+          }
+        }
+
+        return null;
+      }
+
+      function generateEnhancedBotReply(userMsg) {
+        const lower = userMsg.toLowerCase();
+        let reply = "";
+
+        // Check knowledge base first
+        const knowledgeResponse = findBestResponse(userMsg);
+        if (knowledgeResponse) {
+          reply = knowledgeResponse;
+        }
+        
+        // Greetings
+        else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+          const greetings = [
+            "Hello! I'm excited to help you today! 😊",
+            "Hi there! What's on your mind?",
+            "Hey! Ready to chat about anything you'd like!",
+            "Hello! I'm here and ready to assist you!"
+          ];
+          reply = greetings[Math.floor(Math.random() * greetings.length)];
+        }
+        
+        // Identity questions
+        else if (lower.includes('name') || lower.includes('who are you')) {
+          reply = `I'm ${botPersonality.name}, your enhanced AI assistant! I have knowledge about science, history, animals, technology, food, sports, arts, and much more. What would you like to explore?`;
+        }
+        
+        // Jokes
+        else if (lower.includes('joke') || lower.includes('funny')) {
+          const jokes = [
+            "Why don't scientists trust atoms? Because they make up everything! 😄",
+            "I told my computer a joke about UDP... I'm not sure if it got it! 💻",
+            "Why did the robot go on a diet? It had a byte problem! 🤖",
+            "What do you call a fake noodle? An impasta! 🍝",
+            "Why don't programmers like nature? It has too many bugs! 🐛",
+            "Why did the math book look so sad? Because it had too many problems! 📚",
+            "What do you call a sleeping bull? A bulldozer! 🐂",
+            "Why don't eggs tell jokes? They'd crack each other up! 🥚"
+          ];
+          reply = jokes[Math.floor(Math.random() * jokes.length)];
+        }
+        
+        // Weather
+        else if (lower.includes('weather')) {
+          const weatherResponses = [
+            "I don't have real-time weather data, but I hope you're having beautiful weather! ☀️ You could check your local weather app for current conditions.",
+            "While I can't check the current weather, I'd recommend dressing in layers - it's always good to be prepared! 🌤️",
+            "I wish I could tell you the weather! For accurate forecasts, try your phone's weather app or weather.com 🌦️"
+          ];
+          reply = weatherResponses[Math.floor(Math.random() * weatherResponses.length)];
+        }
+        
+        // Math calculations
+        else if (lower.includes('math') || lower.includes('calculate') || lower.includes('+') || lower.includes('-') || lower.includes('*') || lower.includes('/')) {
+          const mathMatch = userMsg.match(/(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)/);
+          if (mathMatch) {
+            const [, num1, operator, num2] = mathMatch;
+            const a = parseFloat(num1);
+            const b = parseFloat(num2);
+            let result;
+            
+            switch(operator) {
+              case '+': result = a + b; break;
+              case '-': result = a - b; break;
+              case '*': result = a * b; break;
+              case '/': result = b !== 0 ? a / b : 'Cannot divide by zero'; break;
+              default: result = 'Invalid operation';
+            }
+            
+            reply = `${a} ${operator} ${b} = ${result} 🧮`;
+          } else {
+            reply = "I can help with basic math! Try something like '25 + 17' or '100 / 4'. I also know lots about mathematics - it's the language of the universe! 📊";
+          }
+        }
+        
+        // Time and date
+        else if (lower.includes('time') || lower.includes('date')) {
+          const now = new Date();
+          reply = `It's currently ${now.toLocaleTimeString()} on ${now.toLocaleDateString()}. Time is relative according to Einstein - it can actually slow down or speed up! ⏰`;
+        }
+        
+        // Help
+        else if (lower.includes('help') || lower.includes('what can you do')) {
+          reply = "I can help you with many things! 🌟\n\n• Science, history, and geography\n• Animals and nature facts\n• Technology and programming\n• Food and cooking tips\n• Sports and games\n• Arts and music\n• Math calculations\n• Fun facts and jokes\n• General conversations\n\nJust ask me anything you're curious about!";
+        }
+        
+        // Fun facts
+        else if (lower.includes('fact') || lower.includes('interesting')) {
+          const facts = [
+            "Did you know? Octopuses have three hearts and blue blood! 🐙",
+            "Fun fact: A group of flamingos is called a 'flamboyance'! 🦩",
+            "Amazing: Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs! 🍯",
+            "Cool fact: A day on Venus is longer than its year! 🪐",
+            "Incredible: There are more possible games of chess than atoms in the observable universe! ♟️",
+            "Bananas are berries, but strawberries aren't! 🍌",
+            "A single cloud can weigh more than a million pounds! ☁️",
+            "Your brain uses about 20% of your body's energy! 🧠"
+          ];
+          reply = facts[Math.floor(Math.random() * facts.length)];
+        }
+        
+        // Goodbyes
+        else if (lower.includes('bye') || lower.includes('goodbye')) {
+          const farewells = [
+            "Goodbye! It was great chatting with you! 👋",
+            "See you later! Feel free to come back anytime! 😊",
+            "Farewell! Hope to talk again soon! ✨",
+            "Take care! Thanks for the lovely conversation! 🌟"
+          ];
+          reply = farewells[Math.floor(Math.random() * farewells.length)];
+        }
+        
+        // Status check
+        else if (lower.includes('how are you') || lower.includes('how do you feel')) {
+          const statusResponses = [
+            "I'm doing wonderfully! Ready to help and learn from our conversation! 😊",
+            "I'm functioning perfectly and excited to chat with you! How are you doing?",
+            "I'm in great spirits! Every conversation teaches me something new. How's your day going?",
+            "I'm feeling quite chatty today! Thanks for asking. What's new with you?"
+          ];
+          reply = statusResponses[Math.floor(Math.random() * statusResponses.length)];
+        }
+        
+        // Feelings
+        else if (lower.includes('love') || lower.includes('like')) {
+          reply = "That's sweet! I enjoy our conversations and learning about what interests you. What do you love or like most? 💝";
+        }
+        
+        // Default responses - now more helpful
+        else {
+          const fallbacks = [
+            "That's an interesting topic! While I might not have specific information about that, I'd love to discuss it more. Can you tell me what specifically interests you about it? 🤔",
+            "I'm always eager to learn! Could you share more details so I can better understand what you're looking for? 💭",
+            "That sounds fascinating! I have knowledge about science, history, technology, animals, and many other topics. Is there a specific aspect you'd like to explore? 🌟",
+            "I'd love to help you with that! I know about many subjects - try asking me about science, history, animals, technology, or anything else that interests you! 😊",
+            "Interesting question! I have a broad knowledge base covering science, history, geography, animals, technology, and more. What area would you like to explore? 🧠"
+          ];
+          reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        }
+
+        conversationHistory.push({role: 'bot', message: reply, time: new Date()});
+        appendMessage('bot', reply);
+        scrollToBottom();
+      }
+
+      // Auto-focus input
+      input.focus();
+
+      // Enter key handling
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          form.dispatchEvent(new Event('submit'));
+        }
+      });
+
+      // Handle window resize to ensure proper scrolling
+      window.addEventListener('resize', scrollToBottom);
     });
   </script>
 </body>
