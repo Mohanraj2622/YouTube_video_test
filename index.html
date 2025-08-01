@@ -2,44 +2,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Enhanced Mobile ChatBot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Chat Assistant</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: #f5f7fa;
       height: 100vh;
       overflow: hidden;
-      color: #333;
-    }
-
-    .chat-container {
-      width: 100vw;
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.1);
     }
 
-    header {
-      background: rgba(0, 0, 0, 0.2);
+    /* Header Styles */
+    .chat-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      text-align: center;
       padding: 16px;
+      text-align: center;
       font-size: 1.2rem;
       font-weight: 600;
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       position: relative;
-      flex-shrink: 0;
+      z-index: 10;
     }
 
     .status-indicator {
@@ -47,92 +39,101 @@
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #4ade80;
       border-radius: 50%;
-      animation: pulse 2s infinite;
+      animation: pulse 1.5s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
     }
 
-    .chat-box {
+    /* Chat Container */
+    .chat-container {
       flex: 1;
-      padding: 16px;
       overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 80px; /* Space for input */
       display: flex;
       flex-direction: column;
       gap: 12px;
-      scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
     }
 
-    .chat-box::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .chat-box::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .chat-box::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 2px;
-    }
-
+    /* Message Styles */
     .message {
       max-width: 85%;
       padding: 12px 16px;
       border-radius: 18px;
-      line-height: 1.5;
-      word-wrap: break-word;
+      line-height: 1.4;
       font-size: 0.95rem;
-      animation: slideIn 0.4s ease-out;
+      animation: fadeIn 0.3s ease-out;
       position: relative;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .user {
+    .user-message {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       align-self: flex-end;
-      border-bottom-right-radius: 6px;
+      border-bottom-right-radius: 4px;
+      margin-left: 15%;
     }
 
-    .bot {
-      background: rgba(255, 255, 255, 0.95);
+    .bot-message {
+      background: white;
       color: #333;
       align-self: flex-start;
-      border-bottom-left-radius: 6px;
-      backdrop-filter: blur(10px);
+      border-bottom-left-radius: 4px;
+      margin-right: 15%;
     }
 
+    .message-time {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-top: 4px;
+      display: block;
+      text-align: right;
+    }
+
+    .bot-message .message-time {
+      text-align: left;
+      color: #666;
+    }
+
+    /* Welcome Message */
+    .welcome-message {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 12px;
+      margin: 8px 0;
+    }
+
+    /* Typing Indicator */
     .typing-indicator {
       display: flex;
       align-items: center;
       gap: 8px;
       padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.95);
+      background: white;
       border-radius: 18px;
-      border-bottom-left-radius: 6px;
+      border-bottom-left-radius: 4px;
       max-width: 85%;
       align-self: flex-start;
-      animation: slideIn 0.4s ease-out;
-      color: #333;
+      animation: fadeIn 0.3s ease-out;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .typing-dots {
@@ -141,8 +142,8 @@
     }
 
     .typing-dots div {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       background: #999;
       border-radius: 50%;
       animation: typing 1.4s infinite ease-in-out;
@@ -152,52 +153,81 @@
     .typing-dots div:nth-child(2) { animation-delay: -0.16s; }
 
     @keyframes typing {
-      0%, 80%, 100% {
-        transform: scale(0);
-        opacity: 0.5;
-      }
-      40% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
     }
 
-    .input-container {
-      padding: 16px;
-      background: rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      flex-shrink: 0;
-    }
-
-    form {
+    /* Quick Actions */
+    .quick-actions {
       display: flex;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 25px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      gap: 8px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      background: white;
+      border-top: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 5;
     }
 
-    input {
+    .quick-action {
+      background: #f0f4ff;
+      color: #667eea;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .quick-action:hover {
+      background: #e0e8ff;
+      transform: translateY(-1px);
+    }
+
+    /* Input Container */
+    .input-container {
+      background: white;
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    .user-input {
       flex: 1;
-      padding: 12px 20px;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 24px;
       font-size: 1rem;
-      border: none;
       outline: none;
-      color: white;
-      background: transparent;
+      transition: border 0.2s ease;
     }
 
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
+    .user-input:focus {
+      border-color: #667eea;
     }
 
-    button {
-      padding: 12px 18px;
+    .user-input::placeholder {
+      color: #999;
+    }
+
+    .send-btn {
+      padding: 0 20px;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none;
       color: white;
-      font-size: 1.2rem;
+      border: none;
+      border-radius: 24px;
+      font-size: 1rem;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -205,143 +235,52 @@
       justify-content: center;
     }
 
-    button:hover {
-      background: linear-gradient(135deg, #5a6fd8, #6a42a0);
-      transform: scale(1.05);
+    .send-btn:hover {
+      opacity: 0.9;
+      transform: scale(0.98);
     }
 
-    button:active {
-      transform: scale(0.95);
-    }
-
-    button:disabled {
+    .send-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
     }
-
-    .quick-actions {
-      display: flex;
-      gap: 8px;
-      padding: 8px 16px;
-      overflow-x: auto;
-      background: rgba(0, 0, 0, 0.05);
-      flex-shrink: 0;
-    }
-
-    .quick-action {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 8px 12px;
-      border-radius: 16px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .quick-action:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .message-time {
-      font-size: 0.7rem;
-      opacity: 0.7;
-      margin-top: 4px;
-      text-align: right;
-      color: inherit;
-    }
-
-    .bot .message-time {
-      text-align: left;
-    }
-
-    .welcome-message {
-      text-align: center;
-      color: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      margin: 8px 0;
-    }
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <header>
-      🤖 AI ChatBot
-      <div class="status-indicator"></div>
-    </header>
-    
-    <div class="chat-box" id="chat-box">
-      <div class="welcome-message">
-        👋 Welcome! I'm your AI assistant.<br>
-        Try asking me about weather, jokes, math, or just chat!
-      </div>
-    </div>
+  <header class="chat-header">
+    🤖 AI Chat Assistant
+    <div class="status-indicator"></div>
+  </header>
 
-    <div class="quick-actions" id="quick-actions">
-      <div class="quick-action" data-message="Tell me a joke">😄 Joke</div>
-      <div class="quick-action" data-message="What's the weather like?">🌤️ Weather</div>
-      <div class="quick-action" data-message="Help me with math">🧮 Math</div>
-      <div class="quick-action" data-message="Tell me something interesting">🎯 Fun Fact</div>
-    </div>
+  <div class="quick-actions" id="quick-actions">
+    <button class="quick-action" data-message="Tell me a joke">😄 Joke</button>
+    <button class="quick-action" data-message="What's the weather?">🌤️ Weather</button>
+    <button class="quick-action" data-message="Help with math">🧮 Math</button>
+    <button class="quick-action" data-message="Fun fact">🎯 Fun Fact</button>
+  </div>
 
-    <div class="input-container" style="position: fixed; bottom: 0; width: 100%;">
-  <form id="chat-form" style="display: flex; margin: 0 16px 16px;">
-    <input 
-      type="text" 
-      id="user-input" 
-      placeholder="Type your message..." 
-      autocomplete="off"
-      style="
-        flex: 1;
-        padding: 12px 16px;
-        border: 1px solid #ddd;
-        border-radius: 24px;
-        font-size: 16px;
-        outline: none;
-      "
-    />
-    <button 
-      type="submit" 
-      id="send-btn"
-      style="
-        margin-left: 8px;
-        padding: 0 16px;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 24px;
-        font-size: 16px;
-        cursor: pointer;
-      "
-    >
-      Send
-    </button>
-  </form>
+  <div class="chat-container" id="chat-container">
+    <div class="welcome-message">
+      👋 Welcome! I'm your AI assistant.<br>
+      Try asking me about weather, jokes, math, or just chat!
     </div>
+  </div>
+
+  <div class="input-container">
+    <form class="chat-form" id="chat-form">
+      <input type="text" class="user-input" id="user-input" placeholder="Type your message..." autocomplete="off" />
+      <button type="submit" class="send-btn" id="send-btn">Send</button>
+    </form>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('chat-form');
       const input = document.getElementById('user-input');
-      const chatBox = document.getElementById('chat-box');
+      const chatContainer = document.getElementById('chat-container');
       const sendBtn = document.getElementById('send-btn');
       const quickActions = document.getElementById('quick-actions');
-
-      let conversationHistory = [];
-      let botPersonality = {
-        name: "AI ChatBot",
-        mood: "helpful",
-        knowledge: new Date().getFullYear()
-      };
 
       // Quick action handlers
       quickActions.addEventListener('click', (e) => {
@@ -352,44 +291,39 @@
         }
       });
 
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const userMessage = input.value.trim();
         if (!userMessage) return;
 
         sendBtn.disabled = true;
         appendMessage('user', userMessage);
-        conversationHistory.push({role: 'user', message: userMessage, time: new Date()});
         input.value = '';
-
+        
         showTypingIndicator();
         
+        // Simulate bot response delay
         setTimeout(() => {
           hideTypingIndicator();
-          generateEnhancedBotReply(userMessage);
+          generateBotReply(userMessage);
           sendBtn.disabled = false;
           input.focus();
-        }, Math.random() * 1000 + 800);
+        }, 1000 + Math.random() * 1000);
       });
 
-      function appendMessage(sender, text, showTime = true) {
-        const msg = document.createElement('div');
-        msg.className = `message ${sender}`;
-        msg.textContent = text;
-        
-        if (showTime) {
-          const timeDiv = document.createElement('div');
-          timeDiv.className = 'message-time';
-          timeDiv.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-          msg.appendChild(timeDiv);
-        }
-        
-        chatBox.appendChild(msg);
+      function appendMessage(sender, text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        messageDiv.innerHTML = `
+          <div>${text}</div>
+          <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        `;
+        chatContainer.appendChild(messageDiv);
         scrollToBottom();
       }
 
       function scrollToBottom() {
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
       }
 
       function showTypingIndicator() {
@@ -402,9 +336,9 @@
             <div></div>
             <div></div>
           </div>
-          <span>ChatBot is typing...</span>
+          <span>AI is typing...</span>
         `;
-        chatBox.appendChild(indicator);
+        chatContainer.appendChild(indicator);
         scrollToBottom();
       }
 
@@ -413,251 +347,46 @@
         if (indicator) indicator.remove();
       }
 
-      // Comprehensive Knowledge Base
-      const knowledgeBase = {
-        // Science & Technology
-        science: {
-          keywords: ['science', 'physics', 'chemistry', 'biology', 'space', 'planet', 'solar system', 'universe', 'atom', 'molecule', 'gravity', 'light', 'energy', 'dna', 'evolution', 'bacteria', 'virus'],
-          responses: {
-            'physics': "Physics is the study of matter, energy, and their interactions! It helps us understand everything from tiny atoms to massive galaxies. What aspect interests you most? ⚛️",
-            'chemistry': "Chemistry explores how atoms and molecules interact to form everything around us! It's like the recipe book of the universe. Any specific chemical process you're curious about? 🧪",
-            'biology': "Biology is the fascinating study of life! From microscopic bacteria to complex ecosystems, it explains how living things work and evolve. What living thing amazes you most? 🧬",
-            'space': "Space is incredibly vast and mysterious! Our universe contains billions of galaxies, each with billions of stars. The nearest star to us (besides the Sun) is over 4 light-years away! 🌌",
-            'gravity': "Gravity is the force that keeps us grounded and planets in orbit! Einstein showed us it's actually the curvature of spacetime. Without it, everything would float away! 🪐",
-            'evolution': "Evolution explains how species change over time through natural selection. It's how we got the amazing diversity of life on Earth! Humans and chimpanzees share about 98.8% of their DNA! 🐒"
-          }
-        },
-
-        // History & Geography
-        history: {
-          keywords: ['history', 'ancient', 'egypt', 'rome', 'greece', 'war', 'civilization', 'empire', 'king', 'queen', 'president', 'country', 'capital', 'continent', 'ocean', 'mountain', 'river'],
-          responses: {
-            'egypt': "Ancient Egypt was an incredible civilization! They built the pyramids, created hieroglyphics, and mummified pharaohs. The Great Pyramid of Giza was the tallest building for over 3,800 years! 🏺",
-            'rome': "The Roman Empire was massive, stretching across Europe, Africa, and Asia! They gave us roads, aqueducts, the calendar, and many words we still use today. 'Veni, vidi, vici!' 🏛️",
-            'ocean': "Our planet has five major oceans: Pacific (largest), Atlantic, Indian, Southern, and Arctic! The Pacific Ocean alone covers about 46% of Earth's water surface! 🌊",
-            'mountain': "Mountains form through tectonic activity! Mount Everest (29,032 feet) is the tallest, but Mauna Kea in Hawaii is actually taller when measured from its underwater base! 🏔️"
-          }
-        },
-
-        // Animals & Nature
-        animals: {
-          keywords: ['animal', 'dog', 'cat', 'bird', 'fish', 'lion', 'tiger', 'elephant', 'whale', 'dolphin', 'shark', 'bear', 'wolf', 'horse', 'cow', 'chicken', 'snake', 'spider', 'insect', 'butterfly', 'bee'],
-          responses: {
-            'dog': "Dogs are amazing companions! They were the first animals domesticated by humans, about 15,000 years ago. They can learn over 150 words and some can even do math! 🐕",
-            'cat': "Cats are fascinating! They sleep 12-16 hours a day, have excellent night vision, and can rotate their ears 180 degrees. A group of cats is called a 'clowder'! 🐱",
-            'elephant': "Elephants are incredibly intelligent! They have excellent memories, can recognize themselves in mirrors, and mourn their dead. An elephant's trunk has over 40,000 muscles! 🐘",
-            'whale': "Whales are the largest animals ever! Blue whales can reach 100 feet long and weigh 200 tons. Their hearts alone can weigh as much as a car! 🐋",
-            'bee': "Bees are essential pollinators! A single bee colony can contain up to 60,000 bees. They communicate through dancing and can see ultraviolet patterns on flowers! 🐝"
-          }
-        },
-
-        // Technology & Computing
-        technology: {
-          keywords: ['computer', 'internet', 'ai', 'robot', 'software', 'hardware', 'programming', 'code', 'website', 'app', 'phone', 'smartphone', 'tablet', 'laptop'],
-          responses: {
-            'computer': "Computers process information using binary code (0s and 1s)! The first computer, ENIAC, weighed 30 tons. Now we carry more computing power in our pockets! 💻",
-            'internet': "The internet connects billions of devices worldwide! It started as ARPANET in 1969 with just 4 computers. Now over 4.6 billion people use it daily! 🌐",
-            'ai': "AI helps computers learn and make decisions! From recommendation systems to self-driving cars, AI is everywhere. Machine learning lets computers improve from experience! 🤖",
-            'programming': "Programming is like giving instructions to computers! Popular languages include Python, JavaScript, Java, and C++. It's the language of the digital world! 👨‍💻"
-          }
-        },
-
-        // Food & Cooking
-        food: {
-          keywords: ['food', 'cooking', 'recipe', 'pizza', 'pasta', 'burger', 'salad', 'fruit', 'vegetable', 'meat', 'fish', 'chicken', 'rice', 'bread', 'cake', 'chocolate'],
-          responses: {
-            'pizza': "Pizza originated in Naples, Italy! The Margherita pizza was created in 1889 to honor Queen Margherita, using tomatoes, mozzarella, and basil to represent the Italian flag! 🍕",
-            'chocolate': "Chocolate comes from cacao beans! The Aztecs used cacao as currency. Dark chocolate contains antioxidants and can be good for your heart in moderation! 🍫",
-            'cooking': "Cooking is both science and art! Heat transforms proteins, caramelizes sugars, and creates amazing flavors through the Maillard reaction. What's your favorite dish to cook? 👨‍🍳"
-          }
-        },
-
-        // Sports & Games
-        sports: {
-          keywords: ['sport', 'football', 'soccer', 'basketball', 'tennis', 'baseball', 'swimming', 'running', 'olympics', 'game', 'chess', 'video game'],
-          responses: {
-            'soccer': "Soccer (football) is the world's most popular sport! It's played by over 250 million people in 200+ countries. The World Cup is watched by over 3.5 billion people! ⚽",
-            'olympics': "The Olympics bring together athletes from around the world! The ancient Olympics began in Greece in 776 BC. The modern Olympics started in 1896! 🏅",
-            'chess': "Chess is called the 'game of kings'! There are more possible chess games than atoms in the observable universe. The longest game on record lasted 269 moves! ♟️"
-          }
-        },
-
-        // Music & Arts
-        arts: {
-          keywords: ['music', 'song', 'guitar', 'piano', 'art', 'painting', 'drawing', 'movie', 'film', 'book', 'novel', 'poem', 'dance'],
-          responses: {
-            'music': "Music is universal! It activates multiple brain regions and can trigger emotions and memories. Every culture in human history has had some form of music! 🎵",
-            'painting': "Painting is one of humanity's oldest art forms! Cave paintings date back 40,000 years. The Mona Lisa is probably the most famous painting in the world! 🎨",
-            'book': "Books preserve knowledge and stories across time! The oldest known book is the Diamond Sutra from 868 AD. Reading increases vocabulary and empathy! 📚"
-          }
-        }
-      };
-
-      function findBestResponse(userMsg) {
-        const lower = userMsg.toLowerCase();
-        let bestMatch = null;
-        let bestScore = 0;
-
-        // Check each knowledge category
-        for (const [category, data] of Object.entries(knowledgeBase)) {
-          for (const keyword of data.keywords) {
-            if (lower.includes(keyword)) {
-              // Check if we have a specific response for this keyword
-              if (data.responses[keyword]) {
-                return data.responses[keyword];
-              }
-              // Otherwise, use a general response for this category
-              const responses = Object.values(data.responses);
-              return responses[Math.floor(Math.random() * responses.length)];
-            }
-          }
-        }
-
-        return null;
-      }
-
-      function generateEnhancedBotReply(userMsg) {
-        const lower = userMsg.toLowerCase();
+      function generateBotReply(userMessage) {
+        const lowerMsg = userMessage.toLowerCase();
         let reply = "";
 
-        // Check knowledge base first
-        const knowledgeResponse = findBestResponse(userMsg);
-        if (knowledgeResponse) {
-          reply = knowledgeResponse;
-        }
-        
-        // Greetings
-        else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-          const greetings = [
-            "Hello! I'm excited to help you today! 😊",
-            "Hi there! What's on your mind?",
-            "Hey! Ready to chat about anything you'd like!",
-            "Hello! I'm here and ready to assist you!"
-          ];
-          reply = greetings[Math.floor(Math.random() * greetings.length)];
-        }
-        
-        // Identity questions
-        else if (lower.includes('name') || lower.includes('who are you')) {
-          reply = `I'm ${botPersonality.name}, your enhanced AI assistant! I have knowledge about science, history, animals, technology, food, sports, arts, and much more. What would you like to explore?`;
-        }
-        
-        // Jokes
-        else if (lower.includes('joke') || lower.includes('funny')) {
+        // Knowledge responses
+        if (lowerMsg.includes('hello') || lowerMsg.includes('hi') || lowerMsg.includes('hey')) {
+          reply = "Hello there! How can I assist you today? 😊";
+        } 
+        else if (lowerMsg.includes('joke')) {
           const jokes = [
-            "Why don't scientists trust atoms? Because they make up everything! 😄",
-            "I told my computer a joke about UDP... I'm not sure if it got it! 💻",
-            "Why did the robot go on a diet? It had a byte problem! 🤖",
-            "What do you call a fake noodle? An impasta! 🍝",
-            "Why don't programmers like nature? It has too many bugs! 🐛",
-            "Why did the math book look so sad? Because it had too many problems! 📚",
-            "What do you call a sleeping bull? A bulldozer! 🐂",
-            "Why don't eggs tell jokes? They'd crack each other up! 🥚"
+            "Why don't scientists trust atoms? Because they make up everything!",
+            "Did you hear about the mathematician who's afraid of negative numbers? He'll stop at nothing to avoid them!",
+            "Why don't programmers like nature? It has too many bugs!"
           ];
-          reply = jokes[Math.floor(Math.random() * jokes.length)];
+          reply = jokes[Math.floor(Math.random() * jokes.length)] + " 😄";
         }
-        
-        // Weather
-        else if (lower.includes('weather')) {
-          const weatherResponses = [
-            "I don't have real-time weather data, but I hope you're having beautiful weather! ☀️ You could check your local weather app for current conditions.",
-            "While I can't check the current weather, I'd recommend dressing in layers - it's always good to be prepared! 🌤️",
-            "I wish I could tell you the weather! For accurate forecasts, try your phone's weather app or weather.com 🌦️"
-          ];
-          reply = weatherResponses[Math.floor(Math.random() * weatherResponses.length)];
+        else if (lowerMsg.includes('weather')) {
+          reply = "I can't check real-time weather, but I recommend dressing in layers to be prepared for any conditions! 🌦️";
         }
-        
-        // Math calculations
-        else if (lower.includes('math') || lower.includes('calculate') || lower.includes('+') || lower.includes('-') || lower.includes('*') || lower.includes('/')) {
-          const mathMatch = userMsg.match(/(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)/);
-          if (mathMatch) {
-            const [, num1, operator, num2] = mathMatch;
-            const a = parseFloat(num1);
-            const b = parseFloat(num2);
-            let result;
-            
-            switch(operator) {
-              case '+': result = a + b; break;
-              case '-': result = a - b; break;
-              case '*': result = a * b; break;
-              case '/': result = b !== 0 ? a / b : 'Cannot divide by zero'; break;
-              default: result = 'Invalid operation';
-            }
-            
-            reply = `${a} ${operator} ${b} = ${result} 🧮`;
-          } else {
-            reply = "I can help with basic math! Try something like '25 + 17' or '100 / 4'. I also know lots about mathematics - it's the language of the universe! 📊";
-          }
+        else if (lowerMsg.includes('math') || lowerMsg.match(/\d+[\+\-\*\/]\d+/)) {
+          reply = "I can help with math calculations! Try something like '25 + 17' or '100 / 4' for exact answers. 🧮";
         }
-        
-        // Time and date
-        else if (lower.includes('time') || lower.includes('date')) {
-          const now = new Date();
-          reply = `It's currently ${now.toLocaleTimeString()} on ${now.toLocaleDateString()}. Time is relative according to Einstein - it can actually slow down or speed up! ⏰`;
-        }
-        
-        // Help
-        else if (lower.includes('help') || lower.includes('what can you do')) {
-          reply = "I can help you with many things! 🌟\n\n• Science, history, and geography\n• Animals and nature facts\n• Technology and programming\n• Food and cooking tips\n• Sports and games\n• Arts and music\n• Math calculations\n• Fun facts and jokes\n• General conversations\n\nJust ask me anything you're curious about!";
-        }
-        
-        // Fun facts
-        else if (lower.includes('fact') || lower.includes('interesting')) {
+        else if (lowerMsg.includes('fact') || lowerMsg.includes('interesting')) {
           const facts = [
-            "Did you know? Octopuses have three hearts and blue blood! 🐙",
-            "Fun fact: A group of flamingos is called a 'flamboyance'! 🦩",
-            "Amazing: Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs! 🍯",
-            "Cool fact: A day on Venus is longer than its year! 🪐",
-            "Incredible: There are more possible games of chess than atoms in the observable universe! ♟️",
-            "Bananas are berries, but strawberries aren't! 🍌",
-            "A single cloud can weigh more than a million pounds! ☁️",
-            "Your brain uses about 20% of your body's energy! 🧠"
+            "Octopuses have three hearts and blue blood!",
+            "Honey never spoils - archaeologists have found edible honey in ancient Egyptian tombs!",
+            "A day on Venus is longer than its year!"
           ];
-          reply = facts[Math.floor(Math.random() * facts.length)];
+          reply = "Did you know? " + facts[Math.floor(Math.random() * facts.length)] + " 🌟";
         }
-        
-        // Goodbyes
-        else if (lower.includes('bye') || lower.includes('goodbye')) {
-          const farewells = [
-            "Goodbye! It was great chatting with you! 👋",
-            "See you later! Feel free to come back anytime! 😊",
-            "Farewell! Hope to talk again soon! ✨",
-            "Take care! Thanks for the lovely conversation! 🌟"
-          ];
-          reply = farewells[Math.floor(Math.random() * farewells.length)];
-        }
-        
-        // Status check
-        else if (lower.includes('how are you') || lower.includes('how do you feel')) {
-          const statusResponses = [
-            "I'm doing wonderfully! Ready to help and learn from our conversation! 😊",
-            "I'm functioning perfectly and excited to chat with you! How are you doing?",
-            "I'm in great spirits! Every conversation teaches me something new. How's your day going?",
-            "I'm feeling quite chatty today! Thanks for asking. What's new with you?"
-          ];
-          reply = statusResponses[Math.floor(Math.random() * statusResponses.length)];
-        }
-        
-        // Feelings
-        else if (lower.includes('love') || lower.includes('like')) {
-          reply = "That's sweet! I enjoy our conversations and learning about what interests you. What do you love or like most? 💝";
-        }
-        
-        // Default responses - now more helpful
         else {
           const fallbacks = [
-            "That's an interesting topic! While I might not have specific information about that, I'd love to discuss it more. Can you tell me what specifically interests you about it? 🤔",
-            "I'm always eager to learn! Could you share more details so I can better understand what you're looking for? 💭",
-            "That sounds fascinating! I have knowledge about science, history, technology, animals, and many other topics. Is there a specific aspect you'd like to explore? 🌟",
-            "I'd love to help you with that! I know about many subjects - try asking me about science, history, animals, technology, or anything else that interests you! 😊",
-            "Interesting question! I have a broad knowledge base covering science, history, geography, animals, technology, and more. What area would you like to explore? 🧠"
+            "That's interesting! Could you tell me more about what you're looking for?",
+            "I'd be happy to help with that. Could you provide some more details?",
+            "I'm here to assist you. What specific information would you like?"
           ];
           reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
         }
 
-        conversationHistory.push({role: 'bot', message: reply, time: new Date()});
         appendMessage('bot', reply);
-        scrollToBottom();
       }
 
       // Auto-focus input
@@ -671,7 +400,7 @@
         }
       });
 
-      // Handle window resize to ensure proper scrolling
+      // Handle window resize
       window.addEventListener('resize', scrollToBottom);
     });
   </script>
