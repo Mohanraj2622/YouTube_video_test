@@ -1,14 +1,10 @@
-      
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>VSCode Mobile</title>
-
-  <!-- Prism CSS for syntax highlighting -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VSCode Mobile Editor</title>
   <style>
     :root {
       --editor-bg: #1e1e1e;
@@ -21,6 +17,7 @@
       --border-color: #444;
       --accent-color: #007acc;
       --menu-bg: #333;
+      --popup-bg: #2d2d30;
     }
 
     * {
@@ -33,13 +30,14 @@
       margin: 0;
       background-color: var(--editor-bg);
       color: white;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
       overflow: hidden;
       font-size: 14px;
       height: 100vh;
       width: 100vw;
       display: flex;
       flex-direction: column;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .top-bar {
@@ -60,6 +58,7 @@
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
+      min-width: 200px;
     }
 
     .menu-bar::-webkit-scrollbar {
@@ -86,6 +85,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 200px;
+      flex-shrink: 0;
     }
 
     .file-tabs-container {
@@ -170,7 +170,7 @@
     }
 
     .side-bar {
-      width: 35px;
+      width: 40px;
       background-color: var(--sidebar-bg);
       display: flex;
       flex-direction: column;
@@ -204,6 +204,7 @@
       display: flex;
       background-color: var(--editor-bg);
       overflow: hidden;
+      position: relative;
     }
 
     .line-numbers {
@@ -211,7 +212,7 @@
       color: var(--line-number-color);
       padding: 10px 8px;
       border-right: 1px solid var(--border-color);
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: inherit;
       font-size: 14px;
       line-height: 1.5;
       text-align: right;
@@ -231,9 +232,28 @@
       font-size: 14px;
       background-color: var(--editor-bg);
       color: var(--text-color);
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: inherit;
       line-height: 1.5;
       tab-size: 2;
+      position: relative;
+    }
+
+    .code-content {
+      position: relative;
+    }
+
+    .cursor {
+      position: absolute;
+      width: 2px;
+      height: 18px;
+      background-color: #fff;
+      animation: blink 1s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     .status-bar {
@@ -254,7 +274,7 @@
       left: 5%;
       width: 90%;
       max-width: 500px;
-      background-color: var(--tab-bg);
+      background-color: var(--popup-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       display: none;
@@ -278,7 +298,7 @@
       border: 1px solid var(--border-color);
       resize: vertical;
       padding: 10px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: inherit;
       font-size: 14px;
       border-radius: 4px;
       outline: none;
@@ -366,7 +386,7 @@
       transform: translate(-50%, -50%);
       width: 90%;
       max-width: 400px;
-      background-color: var(--tab-bg);
+      background-color: var(--popup-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       display: none;
@@ -404,7 +424,7 @@
       color: white;
       border: 1px solid var(--border-color);
       border-radius: 4px;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: inherit;
       font-size: 14px;
     }
 
@@ -424,21 +444,6 @@
 
     ::-webkit-scrollbar-track {
       background: var(--tab-bg);
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .cursor {
-      display: inline-block;
-      width: 8px;
-      height: 16px;
-      background-color: #fff;
-      vertical-align: middle;
-      margin-left: 2px;
-      animation: blink 1s infinite;
     }
 
     @media (max-width: 768px) {
@@ -475,6 +480,10 @@
       .filename-display {
         max-width: 150px;
         font-size: 11px;
+      }
+      
+      .side-bar {
+        width: 35px;
       }
     }
   </style>
@@ -519,15 +528,35 @@
     <!-- Editor Wrapper -->
     <div class="editor-wrapper">
       <div class="line-numbers" id="lineNumbers">1</div>
-      <pre class="editor-container language-javascript"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile!
-// Click the chat button to add your code</code></pre>
+      <div class="editor-container">
+        <pre class="code-content"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile Editor!
+// Click the chat button to add your code
+// Try typing some JavaScript to see the magic
+
+function helloWorld() {
+  console.log("Hello, World!");
+}
+
+class MobileEditor {
+  constructor(name) {
+    this.name = name;
+  }
+  
+  greet() {
+    return `Welcome to ${this.name} editor!`;
+  }
+}
+
+const editor = new MobileEditor("VSCode Mobile");
+console.log(editor.greet());</code></pre>
+      </div>
     </div>
   </div>
 
   <!-- Status Bar -->
   <div class="status-bar">
     <span>JavaScript</span>
-    <span>Lines: <span id="lineCount">2</span> | Ready</span>
+    <span>Lines: <span id="lineCount">15</span> | Ready</span>
   </div>
 
   <!-- Code Input Popup -->
@@ -563,23 +592,15 @@ function hello() {
   <!-- Action Button -->
   <button class="bot-trigger" onclick="togglePopup()" title="Open Code Editor">💬</button>
 
-  <!-- Prism JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-
   <script>
-    let currentCode = "// Welcome to VSCode Mobile!\n// Click the chat button to add your code";
+    let currentCode = document.getElementById("editor").textContent;
     let currentFile = "main.js";
     let files = {
-      "main.js": "// Welcome to VSCode Mobile!\n// Click the chat button to add your code"
+      "main.js": currentCode
     };
     let isTypingEffectRunning = false;
     let typingTimeout = null;
+    let cursorElement = null;
 
     function getFileIcon(filename) {
       const ext = filename.split('.').pop().toLowerCase();
@@ -638,7 +659,10 @@ function hello() {
       if (isTypingEffectRunning) {
         clearTimeout(typingTimeout);
         isTypingEffectRunning = false;
-        return;
+        if (cursorElement) {
+          cursorElement.remove();
+          cursorElement = null;
+        }
       }
       
       document.querySelectorAll('.tab').forEach(tab => {
@@ -659,11 +683,10 @@ function hello() {
         
         const language = getLanguageFromExtension(filename);
         editor.className = `language-${language}`;
-        editor.parentElement.className = `editor-container language-${language}`;
         
         const lines = content.split('\n');
         updateLineNumbers(lines.length);
-        Prism.highlightElement(editor);
+        highlightCode();
         
         const editorWrapper = document.querySelector(".editor-wrapper");
         editorWrapper.scrollTop = 0;
@@ -672,6 +695,21 @@ function hello() {
         document.getElementById("lineCount").textContent = lines.length;
         updateStatusBarLanguage(filename);
       }
+    }
+
+    function highlightCode() {
+      const editor = document.getElementById("editor");
+      // Simple syntax highlighting for demo
+      const code = editor.textContent;
+      
+      // JavaScript highlighting
+      let highlighted = code
+        .replace(/(\/\/.*)/g, '<span class="token comment">$1</span>')
+        .replace(/(\b(function|class|const|let|var|if|else|for|while|return|new|this|console|log)\b)/g, '<span class="token keyword">$1</span>')
+        .replace(/(\b\d+\b)/g, '<span class="token number">$1</span>')
+        .replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, '<span class="token string">$&</span>');
+      
+      editor.innerHTML = highlighted;
     }
 
     function updateStatusBarLanguage(filename) {
@@ -824,48 +862,54 @@ function hello() {
       
       switchTab(filename);
       
-      const editor = document.getElementById("editor");
       document.getElementById("popup").style.display = "none";
       document.getElementById("codeInput").value = "";
       document.getElementById("fileNameInput").value = "";
       
-      editor.textContent = "";
-      
-      const lines = input.split('\n');
-      updateLineNumbers(lines.length);
-      
-      typeAndHighlight(input, editor);
+      typeAndHighlight(input);
     }
 
     function clearEditor() {
       if (confirm("Are you sure you want to clear the current file?")) {
-        const editor = document.getElementById("editor");
         const defaultContent = `// Empty file: ${currentFile}\n`;
         files[currentFile] = defaultContent;
         currentCode = defaultContent;
-        editor.textContent = defaultContent;
+        document.getElementById("editor").textContent = defaultContent;
         updateLineNumbers(2);
-        Prism.highlightElement(editor);
+        highlightCode();
         document.getElementById("popup").style.display = "none";
         document.getElementById("codeInput").value = "";
         document.getElementById("fileNameInput").value = "";
       }
     }
 
-    function typeAndHighlight(code, container) {
+    function typeAndHighlight(code) {
       if (isTypingEffectRunning) {
         clearTimeout(typingTimeout);
         isTypingEffectRunning = false;
+        if (cursorElement) {
+          cursorElement.remove();
+          cursorElement = null;
+        }
       }
+      
+      const editor = document.getElementById("editor");
+      const lineNumbers = document.getElementById("lineNumbers");
+      const editorWrapper = document.querySelector(".editor-wrapper");
+      const editorContainer = document.querySelector(".editor-container");
       
       let i = 0;
       let buffer = "";
       const lines = code.split('\n');
       let currentLine = 1;
-      const editorWrapper = container.parentElement.parentElement;
-      const lineNumbers = document.getElementById("lineNumbers");
       isTypingEffectRunning = true;
-
+      
+      // Create blinking cursor
+      cursorElement = document.createElement('div');
+      cursorElement.className = 'cursor';
+      cursorElement.style.position = 'absolute';
+      editor.appendChild(cursorElement);
+      
       function typing() {
         if (i < code.length) {
           const char = code.charAt(i);
@@ -875,49 +919,51 @@ function hello() {
             currentLine++;
           }
           
-          container.textContent = buffer;
+          editor.textContent = buffer;
+          highlightCode();
+          
+          // Position cursor
+          const range = document.createRange();
+          const sel = window.getSelection();
+          range.setStart(editor.childNodes[0], buffer.length);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          
+          const rect = range.getBoundingClientRect();
+          const editorRect = editor.getBoundingClientRect();
+          const containerRect = editorContainer.getBoundingClientRect();
+          
+          if (rect.width === 0) {
+            // Handle new line
+            cursorElement.style.top = (rect.top - editorRect.top + 20) + 'px';
+            cursorElement.style.left = '0px';
+          } else {
+            cursorElement.style.top = (rect.top - editorRect.top) + 'px';
+            cursorElement.style.left = (rect.left - editorRect.left) + 'px';
+          }
+          
           updateLineNumbers(Math.max(currentLine, lines.length));
-          Prism.highlightElement(container);
           
-          const containerHeight = container.getBoundingClientRect().height;
-          const wrapperHeight = editorWrapper.getBoundingClientRect().height;
-          
-          if (containerHeight > wrapperHeight) {
-            const scrollTop = containerHeight - wrapperHeight + 50;
-            editorWrapper.scrollTop = scrollTop;
-            
-            const lineHeight = 21;
-            const visibleLines = Math.floor(wrapperHeight / lineHeight);
-            const totalLines = Math.max(currentLine, 1);
-            
-            if (totalLines > visibleLines) {
-              const lineNumberScrollTop = (totalLines - visibleLines) * lineHeight;
-              lineNumbers.style.transform = `translateY(-${lineNumberScrollTop}px)`;
-            }
+          // Auto-scroll to cursor
+          if (rect.top > containerRect.bottom - 40) {
+            editorContainer.scrollTop += 20;
           }
           
           i++;
-          typingTimeout = setTimeout(typing, Math.random() * 10 + 10);
+          typingTimeout = setTimeout(typing, 20);
         } else {
           isTypingEffectRunning = false;
           updateLineNumbers(lines.length);
           files[currentFile] = code;
           currentCode = code;
           
-          setTimeout(() => {
-            editorWrapper.scrollTop = editorWrapper.scrollHeight;
-            const lineHeight = 21;
-            const wrapperHeight = editorWrapper.getBoundingClientRect().height;
-            const visibleLines = Math.floor(wrapperHeight / lineHeight);
-            const totalLines = lines.length;
-            
-            if (totalLines > visibleLines) {
-              const lineNumberScrollTop = Math.max(0, (totalLines - visibleLines) * lineHeight);
-              lineNumbers.style.transform = `translateY(-${lineNumberScrollTop}px)`;
-            } else {
-              lineNumbers.style.transform = 'translateY(0px)';
-            }
-          }, 100);
+          // Remove cursor when done
+          cursorElement.remove();
+          cursorElement = null;
+          
+          // Final scroll adjustment
+          editorContainer.scrollTop = editorContainer.scrollHeight;
         }
       }
 
@@ -1009,19 +1055,17 @@ function hello() {
 
     // Initialize
     window.addEventListener('load', function() {
-      const editor = document.getElementById("editor");
-      const editorWrapper = document.querySelector(".editor-wrapper");
+      updateLineNumbers(15);
+      highlightCode();
+      updateStatusBarLanguage(currentFile);
+      
+      // Add scroll sync
+      const editorContainer = document.querySelector(".editor-container");
       const lineNumbers = document.getElementById("lineNumbers");
       
-      updateLineNumbers(2);
-      Prism.highlightElement(editor);
-      
-      editorWrapper.addEventListener('scroll', function() {
-        const scrollTop = this.scrollTop;
-        lineNumbers.style.transform = `translateY(-${scrollTop}px)`;
+      editorContainer.addEventListener('scroll', function() {
+        lineNumbers.style.transform = `translateY(-${this.scrollTop}px)`;
       });
-      
-      updateStatusBarLanguage(currentFile);
     });
 
     // Keyboard shortcuts
