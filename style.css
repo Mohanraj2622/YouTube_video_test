@@ -1,4 +1,4 @@
-/* style.css - Complete styles for VSCode Mobile Editor */
+/* style.css - Complete styles for VSCode Mobile Editor (Fixed Version) */
 
 :root {
   --editor-bg: #1e1e1e;
@@ -11,6 +11,8 @@
   --border-color: #444;
   --accent-color: #007acc;
   --menu-bg: #333;
+  --line-height: 1.5;
+  --font-size: 14px;
 }
 
 * {
@@ -25,11 +27,14 @@ body {
   color: white;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--font-size);
   height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
+  position: fixed; /* Prevent body scrolling */
+  top: 0;
+  left: 0;
 }
 
 .top-bar {
@@ -40,6 +45,8 @@ body {
   align-items: center;
   flex-shrink: 0;
   overflow: hidden;
+  position: relative;
+  z-index: 10;
 }
 
 .menu-bar {
@@ -62,6 +69,7 @@ body {
   border-radius: 3px;
   transition: background-color 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .menu-item:hover {
@@ -76,6 +84,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
+  flex-shrink: 0;
 }
 
 .file-tabs-container {
@@ -86,6 +95,7 @@ body {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  min-width: 0; /* Allow shrinking */
 }
 
 .file-tabs-container::-webkit-scrollbar {
@@ -96,6 +106,7 @@ body {
   display: flex;
   align-items: center;
   height: 100%;
+  min-width: min-content;
 }
 
 .tab {
@@ -116,6 +127,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .tab.active {
@@ -130,6 +142,11 @@ body {
   opacity: 0.7;
   transition: opacity 0.2s, background-color 0.2s;
   flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab .close-btn:hover {
@@ -141,6 +158,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
+  min-width: 0;
 }
 
 .new-tab-btn {
@@ -187,45 +205,69 @@ body {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0; /* Important: allows flex child to shrink */
 }
 
+/* FIXED: Main editor wrapper - this is the key fix for scroll issues */
 .editor-wrapper {
   flex: 1;
   display: flex;
   background-color: var(--editor-bg);
-  overflow: hidden;
+  overflow: hidden; /* Changed from auto to hidden for parent */
   position: relative;
+  min-height: 0; /* Important: allows flex child to shrink */
+  height: 100%; /* Ensure full height */
 }
 
+/* FIXED: Line numbers container */
 .line-numbers {
   background-color: var(--editor-bg);
   color: var(--line-number-color);
   padding: 10px 8px;
   border-right: 1px solid var(--border-color);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--font-size);
+  line-height: var(--line-height);
   text-align: right;
   user-select: none;
   min-width: 40px;
   white-space: pre;
   overflow: hidden;
-  height: 100%;
+  position: relative; /* Changed from height: 100% */
+  flex-shrink: 0;
+  /* Remove transform transitions that cause jumpiness */
+  transition: none;
 }
 
+/* FIXED: Main editor container - this fixes the auto-scroll issue */
 .editor-container {
   flex: 1;
   padding: 10px 15px;
-  white-space: pre;
-  overflow-y: auto;
-  overflow-x: auto;
-  font-size: 14px;
+  white-space: pre-wrap; /* Changed from pre to pre-wrap for better wrapping */
+  overflow-y: auto; /* Vertical scroll when needed */
+  overflow-x: auto; /* Horizontal scroll when needed */
+  font-size: var(--font-size);
   background-color: var(--editor-bg);
   color: var(--text-color);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  line-height: 1.5;
+  line-height: var(--line-height);
   tab-size: 2;
   position: relative;
+  height: 100%; /* Ensure it takes full height */
+  /* CRITICAL: Prevent automatic scrolling during content changes */
+  scroll-behavior: smooth;
+  /* Ensure consistent scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* FIXED: Prevent content jumping during typing animation */
+.editor-container pre {
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  /* Prevent layout shifts */
+  min-height: 100%;
 }
 
 .status-bar {
@@ -238,6 +280,8 @@ body {
   display: flex;
   justify-content: space-between;
   flex-shrink: 0;
+  position: relative;
+  z-index: 10;
 }
 
 .popup {
@@ -254,6 +298,12 @@ body {
   padding: 15px;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  /* Prevent popup from affecting main layout */
+  pointer-events: none;
+}
+
+.popup.show {
+  pointer-events: auto;
 }
 
 .popup-header {
@@ -271,15 +321,35 @@ body {
   resize: vertical;
   padding: 10px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 14px;
+  font-size: var(--font-size);
   border-radius: 4px;
   outline: none;
-  line-height: 1.5;
+  line-height: var(--line-height);
   min-height: 80px;
   max-height: 300px;
+  /* Prevent textarea from causing layout issues */
+  box-sizing: border-box;
 }
 
 .popup textarea:focus {
+  border-color: var(--accent-color);
+}
+
+.popup input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: var(--editor-bg);
+  color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: var(--font-size);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.popup input:focus {
   border-color: var(--accent-color);
 }
 
@@ -297,6 +367,7 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
+  font-size: 13px;
 }
 
 .submit-btn {
@@ -397,26 +468,55 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 14px;
+  font-size: var(--font-size);
+  box-sizing: border-box;
 }
 
-/* Cursor styles */
+/* FIXED: Cursor styles - improved positioning and animation */
 .cursor {
-  position: absolute;
   display: inline-block;
   width: 2px;
-  height: 18px;
-  background-color: #fff;
+  height: 1.2em; /* Use em units for better scaling */
+  background-color: var(--accent-color);
   animation: blink 1s infinite;
   pointer-events: none;
+  vertical-align: baseline;
+  /* Remove absolute positioning to prevent layout issues */
+  position: relative;
+  margin-left: 1px;
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
-/* Scrollbar styles */
+/* FIXED: Improved scrollbar styles */
+.editor-container::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.editor-container::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 6px;
+  border: 2px solid var(--editor-bg);
+}
+
+.editor-container::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.editor-container::-webkit-scrollbar-track {
+  background: var(--editor-bg);
+  border-radius: 6px;
+}
+
+.editor-container::-webkit-scrollbar-corner {
+  background: var(--editor-bg);
+}
+
+/* General scrollbar styles for other elements */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -435,8 +535,41 @@ body {
   background: var(--tab-bg);
 }
 
-/* Responsive adjustments */
+/* FIXED: Prevent text selection issues during typing */
+.editor-container.typing {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Syntax highlighting adjustments */
+.language-javascript .token.keyword {
+  color: #569cd6;
+}
+
+.language-javascript .token.string {
+  color: #ce9178;
+}
+
+.language-javascript .token.comment {
+  color: #6a9955;
+}
+
+.language-javascript .token.number {
+  color: #b5cea8;
+}
+
+.language-javascript .token.function {
+  color: #dcdcaa;
+}
+
+/* FIXED: Responsive adjustments with better handling */
 @media (max-width: 768px) {
+  :root {
+    --font-size: 13px;
+  }
+  
   .menu-bar {
     padding-left: 2px;
   }
@@ -447,28 +580,120 @@ body {
   }
   
   .tab {
-    min-width: 100px;
-    padding: 8px 8px;
+    min-width: 80px;
+    max-width: 150px;
+    padding: 8px 6px;
     font-size: 12px;
   }
   
   .line-numbers {
-    min-width: 30px;
+    min-width: 25px;
     padding: 10px 4px;
+    font-size: 12px;
   }
   
   .editor-container {
     padding: 10px 8px;
+    font-size: 13px;
   }
   
   .bot-trigger {
     width: 50px;
     height: 50px;
     font-size: 20px;
+    bottom: 10px;
+    right: 10px;
   }
   
   .filename-display {
-    max-width: 150px;
+    max-width: 100px;
     font-size: 11px;
   }
+  
+  .popup {
+    bottom: 60px;
+    left: 2%;
+    width: 96%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab {
+    min-width: 60px;
+    max-width: 120px;
+    padding: 6px 4px;
+  }
+  
+  .tab .close-btn {
+    width: 14px;
+    height: 14px;
+    font-size: 12px;
+  }
+  
+  .side-bar {
+    width: 30px;
+  }
+  
+  .line-numbers {
+    min-width: 20px;
+    padding: 10px 2px;
+  }
+  
+  .editor-container {
+    padding: 10px 5px;
+  }
+}
+
+/* CRITICAL: Prevent viewport issues on mobile */
+@media (max-height: 600px) {
+  .popup {
+    bottom: 30px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  .popup textarea {
+    height: 80px;
+    max-height: 150px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+    opacity: 1;
+  }
+  
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-color: #ffffff;
+    --line-number-color: #ffffff;
+    --border-color: #ffffff;
+  }
+}
+
+/* Focus indicators for accessibility */
+.tab:focus,
+.menu-item:focus,
+.bot-trigger:focus,
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.editor-container.loading {
+  opacity: 0.7;
+  pointer-events: none;
 }
