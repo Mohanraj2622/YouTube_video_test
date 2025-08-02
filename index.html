@@ -50,11 +50,18 @@
       align-items: center;
       margin-left: 20px;
       overflow-x: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .file-tabs-container::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
     }
 
     .file-tabs {
       display: flex;
       align-items: center;
+      height: 100%;
     }
 
     .tab {
@@ -69,7 +76,13 @@
       align-items: center;
       gap: 6px;
       min-width: 120px;
+      max-width: 200px;
       position: relative;
+      height: 100%;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .tab.active {
@@ -83,11 +96,18 @@
       border-radius: 2px;
       opacity: 0.7;
       transition: opacity 0.2s, background-color 0.2s;
+      flex-shrink: 0;
     }
 
     .tab .close-btn:hover {
       opacity: 1;
       background-color: #444;
+    }
+
+    .tab-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 1;
     }
 
     .new-tab-btn {
@@ -99,6 +119,7 @@
       cursor: pointer;
       border-radius: 3px;
       margin-left: 5px;
+      flex-shrink: 0;
     }
 
     .new-tab-btn:hover {
@@ -117,6 +138,7 @@
       align-items: center;
       padding-top: 8px;
       border-right: 1px solid #444;
+      z-index: 10;
     }
 
     .side-bar .icon {
@@ -140,6 +162,7 @@
       bottom: 0;
       display: flex;
       background-color: #1e1e1e;
+      overflow: hidden;
     }
 
     .line-numbers {
@@ -149,7 +172,7 @@
       border-right: 1px solid #444;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.5;
       text-align: right;
       user-select: none;
       min-width: 40px;
@@ -157,6 +180,7 @@
       overflow: hidden;
       position: sticky;
       top: 0;
+      height: fit-content;
     }
 
     .editor-container {
@@ -169,7 +193,8 @@
       background-color: #1e1e1e;
       color: #d4d4d4;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      line-height: 1.4;
+      line-height: 1.5;
+      tab-size: 2;
     }
 
     .popup {
@@ -206,6 +231,9 @@
       font-size: 14px;
       border-radius: 4px;
       outline: none;
+      line-height: 1.5;
+      min-height: 80px;
+      max-height: 300px;
     }
 
     .popup textarea:focus {
@@ -218,7 +246,7 @@
       margin-top: 10px;
     }
 
-    .popup button {
+    .popup-buttons button {
       flex: 1;
       padding: 10px;
       border: none;
@@ -269,6 +297,7 @@
       box-shadow: 0 4px 15px rgba(0,122,204,0.4);
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 100;
     }
 
     .bot-trigger:hover {
@@ -289,6 +318,7 @@
       padding: 0 10px;
       display: flex;
       justify-content: space-between;
+      z-index: 10;
     }
 
     ::-webkit-scrollbar {
@@ -317,6 +347,35 @@
         min-width: 30px;
         padding: 10px 4px;
       }
+      
+      .menu-bar {
+        display: none;
+      }
+      
+      .file-tabs-container {
+        margin-left: 10px;
+      }
+      
+      .tab {
+        min-width: 100px;
+        padding: 8px 8px;
+      }
+    }
+    
+    /* Animation for typing effect */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background-color: #fff;
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 1s infinite;
     }
   </style>
 </head>
@@ -348,7 +407,7 @@
 
   <!-- Sidebar -->
   <div class="side-bar">
-    <div class="icon" title="Explorer">📁</div>
+    <div class="icon" title="Explorer" onclick="showFileExplorer()">📁</div>
     <div class="icon" title="Search">🔍</div>
     <div class="icon" title="Source Control">🌿</div>
     <div class="icon" title="Extensions">🧩</div>
@@ -391,6 +450,11 @@ function hello() {
   <!-- Prism JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
 
   <script>
     let currentCode = "// Welcome to VSCode Mobile!\n// Click the chat button to add your code";
@@ -398,6 +462,8 @@ function hello() {
     let files = {
       "main.js": "// Welcome to VSCode Mobile!\n// Click the chat button to add your code"
     };
+    let isTypingEffectRunning = false;
+    let typingTimeout = null;
 
     function getFileIcon(filename) {
       const ext = filename.split('.').pop().toLowerCase();
@@ -430,9 +496,9 @@ function hello() {
       const ext = filename.split('.').pop().toLowerCase();
       const languages = {
         'js': 'javascript',
-        'jsx': 'javascript',
+        'jsx': 'jsx',
         'ts': 'typescript',
-        'tsx': 'typescript',
+        'tsx': 'tsx',
         'html': 'html',
         'css': 'css',
         'json': 'json',
@@ -453,6 +519,12 @@ function hello() {
     }
 
     function switchTab(filename) {
+      if (isTypingEffectRunning) {
+        clearTimeout(typingTimeout);
+        isTypingEffectRunning = false;
+        return;
+      }
+      
       // Update active tab
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
@@ -487,7 +559,32 @@ function hello() {
         
         // Update status bar
         document.getElementById("lineCount").textContent = lines.length;
+        updateStatusBarLanguage(filename);
       }
+    }
+
+    function updateStatusBarLanguage(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const languageMap = {
+        'js': 'JavaScript',
+        'jsx': 'JavaScript (JSX)',
+        'ts': 'TypeScript',
+        'tsx': 'TypeScript (TSX)',
+        'html': 'HTML',
+        'css': 'CSS',
+        'json': 'JSON',
+        'md': 'Markdown',
+        'py': 'Python',
+        'java': 'Java',
+        'cpp': 'C++',
+        'c': 'C',
+        'php': 'PHP',
+        'rb': 'Ruby',
+        'go': 'Go',
+        'rs': 'Rust'
+      };
+      
+      document.querySelector('.status-bar span:first-child').textContent = languageMap[ext] || ext.toUpperCase();
     }
 
     function closeTab(event, filename) {
@@ -516,7 +613,20 @@ function hello() {
 
     function createNewTab() {
       const filename = prompt("Enter filename:", "untitled.js");
-      if (filename && !files[filename]) {
+      if (filename) {
+        // Validate filename
+        if (!filename.match(/^[\w,\s-]+\.[A-Za-z]{2,}$/)) {
+          alert("Please enter a valid filename with extension (e.g., script.js, index.html)");
+          return;
+        }
+        
+        // Check if file exists
+        if (files[filename]) {
+          switchTab(filename);
+          return;
+        }
+        
+        // Create new file
         files[filename] = `// New file: ${filename}\n`;
         
         const tabsContainer = document.getElementById("fileTabs");
@@ -533,8 +643,9 @@ function hello() {
         
         tabsContainer.appendChild(newTab);
         switchTab(filename);
-      } else if (files[filename]) {
-        switchTab(filename);
+        
+        // Scroll to the new tab
+        newTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
 
@@ -560,10 +671,21 @@ function hello() {
 
     function submitCode() {
       const input = document.getElementById("codeInput").value.trim();
-      const filename = document.getElementById("fileNameInput").value.trim() || currentFile;
+      let filename = document.getElementById("fileNameInput").value.trim();
       
       if (!input) {
         alert("Please enter some code first!");
+        return;
+      }
+
+      // If no filename provided, use current file
+      if (!filename) {
+        filename = currentFile;
+      }
+      
+      // Validate filename
+      if (!filename.match(/^[\w,\s-]+\.[A-Za-z]{2,}$/)) {
+        alert("Please enter a valid filename with extension (e.g., script.js, index.html)");
         return;
       }
 
@@ -605,25 +727,33 @@ function hello() {
     }
 
     function clearEditor() {
-      const editor = document.getElementById("editor");
-      const defaultContent = `// Empty file: ${currentFile}\n`;
-      files[currentFile] = defaultContent;
-      currentCode = defaultContent;
-      editor.textContent = defaultContent;
-      updateLineNumbers(2);
-      Prism.highlightElement(editor);
-      document.getElementById("popup").style.display = "none";
-      document.getElementById("codeInput").value = "";
-      document.getElementById("fileNameInput").value = "";
+      if (confirm("Are you sure you want to clear the current file?")) {
+        const editor = document.getElementById("editor");
+        const defaultContent = `// Empty file: ${currentFile}\n`;
+        files[currentFile] = defaultContent;
+        currentCode = defaultContent;
+        editor.textContent = defaultContent;
+        updateLineNumbers(2);
+        Prism.highlightElement(editor);
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("codeInput").value = "";
+        document.getElementById("fileNameInput").value = "";
+      }
     }
 
     function typeAndHighlight(code, container) {
+      if (isTypingEffectRunning) {
+        clearTimeout(typingTimeout);
+        isTypingEffectRunning = false;
+      }
+      
       let i = 0;
       let buffer = "";
       const lines = code.split('\n');
       let currentLine = 1;
       const editorWrapper = container.parentElement.parentElement;
       const lineNumbers = document.getElementById("lineNumbers");
+      isTypingEffectRunning = true;
 
       function typing() {
         if (i < code.length) {
@@ -647,7 +777,7 @@ function hello() {
             editorWrapper.scrollTop = scrollTop;
             
             // Sync line numbers scroll
-            const lineHeight = 19.6; // 14px font-size * 1.4 line-height
+            const lineHeight = 21; // Adjusted line height
             const visibleLines = Math.floor(wrapperHeight / lineHeight);
             const totalLines = Math.max(currentLine, 1);
             
@@ -658,8 +788,9 @@ function hello() {
           }
           
           i++;
-          setTimeout(typing, Math.random() * 30 + 20);
+          typingTimeout = setTimeout(typing, Math.random() * 10 + 10);
         } else {
+          isTypingEffectRunning = false;
           updateLineNumbers(lines.length);
           files[currentFile] = code;
           currentCode = code;
@@ -667,7 +798,7 @@ function hello() {
           // Final scroll adjustment
           setTimeout(() => {
             editorWrapper.scrollTop = editorWrapper.scrollHeight;
-            const lineHeight = 19.6;
+            const lineHeight = 21;
             const wrapperHeight = editorWrapper.getBoundingClientRect().height;
             const visibleLines = Math.floor(wrapperHeight / lineHeight);
             const totalLines = lines.length;
@@ -685,6 +816,41 @@ function hello() {
       typing();
     }
 
+    function showFileExplorer() {
+      let fileList = "Files:\n\n";
+      for (const file in files) {
+        fileList += `📄 ${file}\n`;
+      }
+      
+      const newFile = prompt(`${fileList}\nEnter filename to open or create:`);
+      if (newFile) {
+        if (files[newFile]) {
+          switchTab(newFile);
+        } else {
+          // Create new file
+          files[newFile] = `// New file: ${newFile}\n`;
+          createNewTabUI(newFile);
+          switchTab(newFile);
+        }
+      }
+    }
+    
+    function createNewTabUI(filename) {
+      const tabsContainer = document.getElementById("fileTabs");
+      const newTab = document.createElement("div");
+      newTab.className = "tab";
+      newTab.setAttribute("data-file", filename);
+      newTab.onclick = () => switchTab(filename);
+      
+      newTab.innerHTML = `
+        <span>${getFileIcon(filename)}</span>
+        <span class="tab-name">${filename}</span>
+        <span class="close-btn" onclick="closeTab(event, '${filename}')">×</span>
+      `;
+      
+      tabsContainer.appendChild(newTab);
+    }
+
     // Initialize with default content
     window.addEventListener('load', function() {
       const editor = document.getElementById("editor");
@@ -699,15 +865,20 @@ function hello() {
         const scrollTop = this.scrollTop;
         lineNumbers.style.transform = `translateY(-${scrollTop}px)`;
       });
+      
+      // Initialize status bar
+      updateStatusBarLanguage(currentFile);
     });
 
     // Handle keyboard shortcuts
     document.addEventListener('keydown', function(e) {
+      // Ctrl/Cmd + K to toggle popup
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         togglePopup();
       }
       
+      // Escape to close popup
       if (e.key === 'Escape') {
         document.getElementById("popup").style.display = "none";
       }
@@ -716,6 +887,12 @@ function hello() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
         e.preventDefault();
         createNewTab();
+      }
+      
+      // Ctrl/Cmd + O to open file explorer
+      if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
+        e.preventDefault();
+        showFileExplorer();
       }
     });
 
