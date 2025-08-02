@@ -2,160 +2,693 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Excel Formula Animation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>VSCode Mobile</title>
+
+  <!-- Prism CSS for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
     body {
-      background: linear-gradient(to bottom, #0e0b1d, #1a152e);
+      margin: 0;
+      background-color: #1e1e1e;
       color: white;
-      padding: 20px 10px;
-      overflow-x: hidden;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      overflow: hidden;
+      font-size: 14px;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 900;
-    }
-
-    h1 span {
-      color: #a974ff;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 0.9rem;
-      margin: 10px 0 20px;
-    }
-
-    .subtitle strong {
-      color: #a974ff;
-    }
-
-    .tag-box {
-      border: 1px solid #aaa;
-      border-radius: 10px;
-      padding: 15px;
-      max-width: 100%;
-      margin: 0 auto;
+    .top-bar {
+      background-color: #333;
+      height: 40px;
+      border-bottom: 1px solid #444;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      min-height: 200px;
-    }
-
-    .tag {
-      background: #1f1b2e;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      color: #eee;
-      opacity: 0;
-      animation: typewriter 1s forwards;
-    }
-
-    @keyframes typewriter {
-      0% { opacity: 0; transform: translateY(5px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .bottom-bar {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 20px;
-      font-size: 0.75rem;
-      color: #ccc;
     }
 
-    .icons {
+    .menu-bar {
       display: flex;
-      gap: 15px;
+      align-items: center;
+      font-size: 13px;
+      padding-left: 10px;
     }
 
-    .icons div {
+    .menu-item {
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background-color 0.2s;
+    }
+
+    .menu-item:hover {
+      background-color: #37373d;
+    }
+
+    .file-tabs-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      overflow-x: auto;
+    }
+
+    .file-tabs {
+      display: flex;
+      align-items: center;
+    }
+
+    .tab {
+      background-color: #2d2d30;
+      padding: 8px 12px;
+      border-radius: 0;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid #444;
+      border-bottom: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 120px;
+      position: relative;
+    }
+
+    .tab.active {
+      background-color: #1e1e1e;
+      border-bottom: 2px solid #007acc;
+    }
+
+    .tab .close-btn {
+      font-size: 14px;
+      padding: 2px;
+      border-radius: 2px;
+      opacity: 0.7;
+      transition: opacity 0.2s, background-color 0.2s;
+    }
+
+    .tab .close-btn:hover {
+      opacity: 1;
+      background-color: #444;
+    }
+
+    .new-tab-btn {
+      background: none;
+      border: none;
+      color: #cccccc;
+      font-size: 16px;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 3px;
+      margin-left: 5px;
+    }
+
+    .new-tab-btn:hover {
+      background-color: #37373d;
+    }
+
+    .side-bar {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      bottom: 0;
+      width: 35px;
+      background-color: #252526;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 0.75rem;
-      color: #a974ff;
+      padding-top: 8px;
+      border-right: 1px solid #444;
     }
 
-    .icons div::before {
-      content: '♥';
-      font-size: 1.2rem;
+    .side-bar .icon {
+      font-size: 16px;
+      margin: 8px 0;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 3px;
+      transition: background-color 0.2s;
     }
 
-    .icons div:nth-child(2)::before { content: '💬'; }
-    .icons div:nth-child(3)::before { content: '📤'; }
-    .icons div:nth-child(4)::before { content: '🔖'; }
+    .side-bar .icon:hover {
+      background-color: #37373d;
+    }
 
-    .profile {
+    .editor-wrapper {
+      position: absolute;
+      top: 40px;
+      left: 35px;
+      right: 0;
+      bottom: 0;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      background-color: #1e1e1e;
     }
 
-    .profile img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #a974ff;
+    .line-numbers {
+      background-color: #1e1e1e;
+      color: #858585;
+      padding: 10px 8px;
+      border-right: 1px solid #444;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: right;
+      user-select: none;
+      min-width: 40px;
+      white-space: pre;
     }
 
-    .profile span {
+    .editor-container {
+      flex: 1;
+      padding: 10px 15px;
+      white-space: pre;
+      overflow-y: auto;
+      overflow-x: auto;
+      font-size: 14px;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      line-height: 1.4;
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 70px;
+      left: 5%;
+      width: 90%;
+      max-width: 500px;
+      background-color: #2d2d30;
+      border: 1px solid #444;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      padding: 15px;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .popup-header {
       font-weight: bold;
-      font-size: 0.85rem;
+      margin-bottom: 10px;
+      color: #cccccc;
+    }
+
+    .popup textarea {
+      width: 100%;
+      height: 120px;
+      background-color: #1e1e1e;
+      color: white;
+      border: 1px solid #444;
+      resize: vertical;
+      padding: 10px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 14px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .popup textarea:focus {
+      border-color: #007acc;
+    }
+
+    .popup-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .popup button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .submit-btn {
+      background-color: #007acc;
+      color: white;
+    }
+
+    .submit-btn:hover {
+      background-color: #005a9e;
+    }
+
+    .clear-btn {
+      background-color: #444;
+      color: white;
+    }
+
+    .clear-btn:hover {
+      background-color: #555;
+    }
+
+    .cancel-btn {
+      background-color: #666;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background-color: #777;
+    }
+
+    .bot-trigger {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007acc, #005a9e);
+      color: white;
+      font-size: 24px;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0,122,204,0.4);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .bot-trigger:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,122,204,0.6);
+    }
+
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 35px;
+      right: 0;
+      height: 22px;
+      background-color: #007acc;
+      color: white;
+      font-size: 12px;
+      line-height: 22px;
+      padding: 0 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #666;
+    }
+    ::-webkit-scrollbar-track {
+      background: #2d2d30;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .popup {
+        left: 2%;
+        width: 96%;
+      }
+      
+      .line-numbers {
+        min-width: 30px;
+        padding: 10px 4px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Excel <span>Formula Cheats</span></h1>
-  <div class="subtitle">Comment <strong>“EXCEL”</strong> and I’ll DM you this secret list!</div>
 
-  <div class="tag-box" id="tagBox">
-    <!-- Formula tags will be injected here by JS -->
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="menu-bar">
+      <div class="menu-item">File</div>
+      <div class="menu-item">Edit</div>
+      <div class="menu-item">Selection</div>
+      <div class="menu-item">View</div>
+      <div class="menu-item">Go</div>
+      <div class="menu-item">Run</div>
+      <div class="menu-item">Terminal</div>
+      <div class="menu-item">Help</div>
+    </div>
+    <div class="file-tabs-container">
+      <div class="file-tabs" id="fileTabs">
+        <div class="tab active" data-file="main.js">
+          <span>📄</span>
+          <span class="tab-name">main.js</span>
+          <span class="close-btn" onclick="closeTab(event, 'main.js')">×</span>
+        </div>
+      </div>
+      <button class="new-tab-btn" onclick="createNewTab()" title="New File">+</button>
+    </div>
   </div>
 
-  <div class="bottom-bar">
-    <div class="profile">
-      <img src="logo.png" alt="Profile" />
-      <span>@framebycode</span>
-    </div>
-    <div class="icons">
-      <div>Like</div>
-      <div>Comment</div>
-      <div>Share</div>
-      <div>Save</div>
+  <!-- Sidebar -->
+  <div class="side-bar">
+    <div class="icon" title="Explorer">📁</div>
+    <div class="icon" title="Search">🔍</div>
+    <div class="icon" title="Source Control">🌿</div>
+    <div class="icon" title="Extensions">🧩</div>
+    <div class="icon" title="Settings">⚙️</div>
+  </div>
+
+  <!-- Editor Wrapper -->
+  <div class="editor-wrapper">
+    <div class="line-numbers" id="lineNumbers">1</div>
+    <pre class="editor-container language-javascript"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile!
+// Click the chat button to add your code</code></pre>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>JavaScript</span>
+    <span>Lines: <span id="lineCount">2</span> | Ready</span>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-header">💻 Code Editor</div>
+    <input type="text" id="fileNameInput" placeholder="Enter filename (e.g., app.js, index.html, style.css)" 
+           style="width: 100%; padding: 8px; margin-bottom: 10px; background-color: #1e1e1e; color: white; border: 1px solid #444; border-radius: 4px; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 14px;">
+    <textarea id="codeInput" placeholder="Enter your code here...
+Example:
+function hello() {
+  console.log('Hello World!');
+}"></textarea>
+    <div class="popup-buttons">
+      <button class="submit-btn" onclick="submitCode()">Add Code</button>
+      <button class="clear-btn" onclick="clearEditor()">Clear All</button>
+      <button class="cancel-btn" onclick="togglePopup()">Cancel</button>
     </div>
   </div>
+
+  <!-- Trigger -->
+  <button class="bot-trigger" onclick="togglePopup()" title="Open Code Editor">💬</button>
+
+  <!-- Prism JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
   <script>
-    const formulas = [
-      "FILTER()", "UNIQUE()", "TEXTJOIN()", "LET()", "XLOOKUP()", "SEQUENCE()",
-      "SORTBY()", "ISFORMULA()", "WORKDAY()", "FORMULATEXT()", "HYPERLINK()",
-      "INDEX()", "MATCH()", "CHOOSE()", "IFERROR()", "SUBTOTAL()", "RANDARRAY()",
-      "SWITCH()", "XMATCH()", "CONCAT()", "SPLIT()", "IFS()", "EDATE()",
-      "EOMONTH()", "NETWORKDAYS()", "TODAY()", "NOW()", "MOD()", "ROUNDUP()",
-      "OFFSET()"
-    ];
+    let currentCode = "// Welcome to VSCode Mobile!\n// Click the chat button to add your code";
+    let currentFile = "main.js";
+    let files = {
+      "main.js": "// Welcome to VSCode Mobile!\n// Click the chat button to add your code"
+    };
 
-    const tagBox = document.getElementById("tagBox");
+    function getFileIcon(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const icons = {
+        'js': '📄',
+        'html': '🌐',
+        'css': '🎨',
+        'json': '📋',
+        'md': '📝',
+        'py': '🐍',
+        'java': '☕',
+        'cpp': '⚡',
+        'c': '⚡',
+        'php': '🐘',
+        'rb': '💎',
+        'go': '🔷',
+        'rs': '🦀',
+        'ts': '📘',
+        'jsx': '⚛️',
+        'tsx': '⚛️',
+        'vue': '💚',
+        'xml': '📄',
+        'yml': '📄',
+        'yaml': '📄'
+      };
+      return icons[ext] || '📄';
+    }
 
-    formulas.forEach((formula, i) => {
-      const el = document.createElement("div");
-      el.className = "tag";
-      el.style.animationDelay = `${i * 0.1}s`;
-      el.textContent = formula;
-      tagBox.appendChild(el);
+    function getLanguageFromExtension(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const languages = {
+        'js': 'javascript',
+        'jsx': 'javascript',
+        'ts': 'typescript',
+        'tsx': 'typescript',
+        'html': 'html',
+        'css': 'css',
+        'json': 'json',
+        'md': 'markdown',
+        'py': 'python',
+        'java': 'java',
+        'cpp': 'cpp',
+        'c': 'c',
+        'php': 'php',
+        'rb': 'ruby',
+        'go': 'go',
+        'rs': 'rust',
+        'xml': 'xml',
+        'yml': 'yaml',
+        'yaml': 'yaml'
+      };
+      return languages[ext] || 'javascript';
+    }
+
+    function switchTab(filename) {
+      // Update active tab
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      const targetTab = document.querySelector(`[data-file="${filename}"]`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+        currentFile = filename;
+        
+        // Load file content
+        const editor = document.getElementById("editor");
+        const content = files[filename] || '';
+        currentCode = content;
+        editor.textContent = content;
+        
+        // Update language class
+        const language = getLanguageFromExtension(filename);
+        editor.className = `language-${language}`;
+        editor.parentElement.className = `editor-container language-${language}`;
+        
+        // Update line numbers and syntax highlighting
+        const lines = content.split('\n');
+        updateLineNumbers(lines.length);
+        Prism.highlightElement(editor);
+        
+        // Update status bar
+        document.getElementById("lineCount").textContent = lines.length;
+      }
+    }
+
+    function closeTab(event, filename) {
+      event.stopPropagation();
+      
+      if (Object.keys(files).length === 1) {
+        alert("Cannot close the last tab!");
+        return;
+      }
+      
+      delete files[filename];
+      
+      const tab = document.querySelector(`[data-file="${filename}"]`);
+      if (tab) {
+        tab.remove();
+      }
+      
+      // If we closed the active tab, switch to the first available tab
+      if (currentFile === filename) {
+        const remainingFiles = Object.keys(files);
+        if (remainingFiles.length > 0) {
+          switchTab(remainingFiles[0]);
+        }
+      }
+    }
+
+    function createNewTab() {
+      const filename = prompt("Enter filename:", "untitled.js");
+      if (filename && !files[filename]) {
+        files[filename] = `// New file: ${filename}\n`;
+        
+        const tabsContainer = document.getElementById("fileTabs");
+        const newTab = document.createElement("div");
+        newTab.className = "tab";
+        newTab.setAttribute("data-file", filename);
+        newTab.onclick = () => switchTab(filename);
+        
+        newTab.innerHTML = `
+          <span>${getFileIcon(filename)}</span>
+          <span class="tab-name">${filename}</span>
+          <span class="close-btn" onclick="closeTab(event, '${filename}')">×</span>
+        `;
+        
+        tabsContainer.appendChild(newTab);
+        switchTab(filename);
+      } else if (files[filename]) {
+        switchTab(filename);
+      }
+    }
+
+    function togglePopup() {
+      const popup = document.getElementById("popup");
+      const isVisible = popup.style.display === "flex";
+      popup.style.display = isVisible ? "none" : "flex";
+      
+      if (!isVisible) {
+        document.getElementById("fileNameInput").focus();
+      }
+    }
+
+    function updateLineNumbers(lineCount) {
+      const lineNumbers = document.getElementById("lineNumbers");
+      let numbers = "";
+      for (let i = 1; i <= lineCount; i++) {
+        numbers += i + (i < lineCount ? "\n" : "");
+      }
+      lineNumbers.textContent = numbers;
+      document.getElementById("lineCount").textContent = lineCount;
+    }
+
+    function submitCode() {
+      const input = document.getElementById("codeInput").value.trim();
+      const filename = document.getElementById("fileNameInput").value.trim() || currentFile;
+      
+      if (!input) {
+        alert("Please enter some code first!");
+        return;
+      }
+
+      // Create or update file
+      files[filename] = input;
+      
+      // Create tab if it doesn't exist
+      if (!document.querySelector(`[data-file="${filename}"]`)) {
+        const tabsContainer = document.getElementById("fileTabs");
+        const newTab = document.createElement("div");
+        newTab.className = "tab";
+        newTab.setAttribute("data-file", filename);
+        newTab.onclick = () => switchTab(filename);
+        
+        newTab.innerHTML = `
+          <span>${getFileIcon(filename)}</span>
+          <span class="tab-name">${filename}</span>
+          <span class="close-btn" onclick="closeTab(event, '${filename}')">×</span>
+        `;
+        
+        tabsContainer.appendChild(newTab);
+      }
+      
+      // Switch to the tab and update content
+      switchTab(filename);
+      
+      const editor = document.getElementById("editor");
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("codeInput").value = "";
+      document.getElementById("fileNameInput").value = "";
+      
+      editor.textContent = "";
+      
+      // Count lines for initial setup
+      const lines = input.split('\n');
+      updateLineNumbers(lines.length);
+      
+      typeAndHighlight(input, editor);
+    }
+
+    function clearEditor() {
+      const editor = document.getElementById("editor");
+      const defaultContent = `// Empty file: ${currentFile}\n`;
+      files[currentFile] = defaultContent;
+      currentCode = defaultContent;
+      editor.textContent = defaultContent;
+      updateLineNumbers(2);
+      Prism.highlightElement(editor);
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("codeInput").value = "";
+      document.getElementById("fileNameInput").value = "";
+    }
+
+    function typeAndHighlight(code, container) {
+      let i = 0;
+      let buffer = "";
+      const lines = code.split('\n');
+      let currentLine = 1;
+
+      function typing() {
+        if (i < code.length) {
+          const char = code.charAt(i);
+          buffer += char;
+          
+          if (char === '\n') {
+            currentLine++;
+          }
+          
+          container.textContent = buffer;
+          updateLineNumbers(Math.max(currentLine, 1));
+          Prism.highlightElement(container);
+          
+          const editorWrapper = container.parentElement.parentElement;
+          editorWrapper.scrollTop = editorWrapper.scrollHeight;
+          
+          i++;
+          setTimeout(typing, Math.random() * 30 + 20);
+        } else {
+          updateLineNumbers(lines.length);
+          files[currentFile] = code;
+          currentCode = code;
+        }
+      }
+
+      typing();
+    }
+
+    // Initialize with default content
+    window.addEventListener('load', function() {
+      const editor = document.getElementById("editor");
+      updateLineNumbers(2);
+      Prism.highlightElement(editor);
+    });
+
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        togglePopup();
+      }
+      
+      if (e.key === 'Escape') {
+        document.getElementById("popup").style.display = "none";
+      }
+      
+      // Ctrl/Cmd + N for new file
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        createNewTab();
+      }
+    });
+
+    // Auto-resize textarea
+    document.getElementById('codeInput').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 300) + 'px';
+    });
+
+    // Auto-suggest filename based on code content
+    document.getElementById('codeInput').addEventListener('input', function() {
+      const code = this.value.toLowerCase();
+      const filenameInput = document.getElementById('fileNameInput');
+      
+      if (!filenameInput.value) {
+        if (code.includes('<!doctype html') || code.includes('<html')) {
+          filenameInput.placeholder = 'index.html';
+        } else if (code.includes('function') || code.includes('const') || code.includes('let')) {
+          filenameInput.placeholder = 'script.js';
+        } else if (code.includes('body {') || code.includes('color:') || code.includes('margin:')) {
+          filenameInput.placeholder = 'style.css';
+        } else if (code.includes('def ') || code.includes('import ')) {
+          filenameInput.placeholder = 'main.py';
+        }
+      }
     });
   </script>
 </body>
