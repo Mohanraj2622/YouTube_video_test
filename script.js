@@ -1,5 +1,4 @@
 
-<script>
     // COMPLETELY REWRITTEN SYNCHRONIZED SOLUTION
     
     // Configuration
