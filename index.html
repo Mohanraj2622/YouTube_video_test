@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>HTML All Tags</title>
+  <title>Excel Formula Animation</title>
   <style>
     * {
       margin: 0;
@@ -118,11 +118,11 @@
   </style>
 </head>
 <body>
-  <h1>HTML <span>All Tags</span></h1>
-  <div class="subtitle">Comment <strong>“HTML”</strong> and I’ll DM you HTML Cheatsheet!</div>
+  <h1>Excel <span>Formula Cheats</span></h1>
+  <div class="subtitle">Comment <strong>“EXCEL”</strong> and I’ll DM you this secret list!</div>
 
   <div class="tag-box" id="tagBox">
-    <!-- Tags will be injected here by JS -->
+    <!-- Formula tags will be injected here by JS -->
   </div>
 
   <div class="bottom-bar">
@@ -133,27 +133,28 @@
     <div class="icons">
       <div>Like</div>
       <div>Comment</div>
-      <divhare</div>
+      <div>Share</div>
       <div>Save</div>
     </div>
   </div>
 
   <script>
-    const tags = [
-      "!DOCTYPE", "html", "body", "br/", "hr/", "h1", "h2", "h3", "h4", "h5",
-      "p", "b", "i", "th", "tr", "td", "caption", "em", "form", "input",
-      "label", "textarea", "button", "select", "option", "optgroup", "fieldset",
-      "legend", "address", "sub", "sup", "pre", "code", "q", "a", "ul", "ol", "li",
-      "table", "canvas", "div", "video"
+    const formulas = [
+      "FILTER()", "UNIQUE()", "TEXTJOIN()", "LET()", "XLOOKUP()", "SEQUENCE()",
+      "SORTBY()", "ISFORMULA()", "WORKDAY()", "FORMULATEXT()", "HYPERLINK()",
+      "INDEX()", "MATCH()", "CHOOSE()", "IFERROR()", "SUBTOTAL()", "RANDARRAY()",
+      "SWITCH()", "XMATCH()", "CONCAT()", "SPLIT()", "IFS()", "EDATE()",
+      "EOMONTH()", "NETWORKDAYS()", "TODAY()", "NOW()", "MOD()", "ROUNDUP()",
+      "OFFSET()"
     ];
 
     const tagBox = document.getElementById("tagBox");
 
-    tags.forEach((tag, i) => {
+    formulas.forEach((formula, i) => {
       const el = document.createElement("div");
       el.className = "tag";
       el.style.animationDelay = `${i * 0.1}s`;
-      el.textContent = `<${tag}>`;
+      el.textContent = formula;
       tagBox.appendChild(el);
     });
   </script>
