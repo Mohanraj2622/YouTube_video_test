@@ -1,3 +1,4 @@
+      
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,6 +76,16 @@
 
     .menu-item:hover {
       background-color: #37373d;
+    }
+
+    .filename-display {
+      margin-left: 15px;
+      font-size: 12px;
+      color: #ccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
     }
 
     .file-tabs-container {
@@ -348,31 +359,6 @@
       box-shadow: 0 6px 20px rgba(0,122,204,0.6);
     }
 
-    .export-btn {
-      position: fixed;
-      bottom: 15px;
-      right: 85px;
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4CAF50, #2E7D32);
-      color: white;
-      font-size: 24px;
-      border: none;
-      box-shadow: 0 4px 15px rgba(76,175,80,0.4);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .export-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(76,175,80,0.6);
-    }
-
     .export-popup {
       position: fixed;
       top: 50%;
@@ -480,14 +466,15 @@
         padding: 10px 8px;
       }
       
-      .bot-trigger, .export-btn {
+      .bot-trigger {
         width: 50px;
         height: 50px;
         font-size: 20px;
       }
       
-      .export-btn {
-        right: 75px;
+      .filename-display {
+        max-width: 150px;
+        font-size: 11px;
       }
     }
   </style>
@@ -505,6 +492,7 @@
       <div class="menu-item">Terminal</div>
       <div class="menu-item">Help</div>
     </div>
+    <div class="filename-display" id="filenameDisplay">main.js</div>
     <div class="file-tabs-container">
       <div class="file-tabs" id="fileTabs">
         <div class="tab active" data-file="main.js">
@@ -524,7 +512,7 @@
       <div class="icon" title="Explorer" onclick="showFileExplorer()">📁</div>
       <div class="icon" title="Search">🔍</div>
       <div class="icon" title="Source Control">🌿</div>
-      <div class="icon" title="Extensions">🧩</div>
+      <div class="icon" title="Export" onclick="toggleExportPopup()">📤</div>
       <div class="icon" title="Settings">⚙️</div>
     </div>
 
@@ -572,9 +560,8 @@ function hello() {
     </div>
   </div>
 
-  <!-- Action Buttons -->
+  <!-- Action Button -->
   <button class="bot-trigger" onclick="togglePopup()" title="Open Code Editor">💬</button>
-  <button class="export-btn" onclick="toggleExportPopup()" title="Export File">📤</button>
 
   <!-- Prism JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -662,6 +649,7 @@ function hello() {
       if (targetTab) {
         targetTab.classList.add('active');
         currentFile = filename;
+        document.getElementById('filenameDisplay').textContent = filename;
         
         const editor = document.getElementById("editor");
         const lineNumbers = document.getElementById("lineNumbers");
@@ -888,7 +876,7 @@ function hello() {
           }
           
           container.textContent = buffer;
-          updateLineNumbers(Math.max(currentLine, 1));
+          updateLineNumbers(Math.max(currentLine, lines.length));
           Prism.highlightElement(container);
           
           const containerHeight = container.getBoundingClientRect().height;
@@ -1089,4 +1077,4 @@ function hello() {
     });
   </script>
 </body>
-</html> 
+</html>
