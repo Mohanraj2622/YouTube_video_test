@@ -1,10 +1,15 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VSCode Mobile Editor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>VSCode Mobile</title>
+
+  <!-- Prism CSS for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="style.css">
+
+
 </head>
 <body>
   <!-- Top Bar -->
@@ -24,7 +29,7 @@
       <div class="file-tabs" id="fileTabs">
         <div class="tab active" data-file="main.js">
           <span>📄</span>
-          <span class="tab-name">main.js</span>
+          <span class="tab-name">main.code</span>
           <span class="close-btn" onclick="closeTab(event, 'main.js')">×</span>
         </div>
       </div>
@@ -46,35 +51,15 @@
     <!-- Editor Wrapper -->
     <div class="editor-wrapper">
       <div class="line-numbers" id="lineNumbers">1</div>
-      <div class="editor-container">
-        <pre class="code-content"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile Editor!
-// Click the chat button to add your code
-// Try typing some JavaScript to see the magic
-
-function helloWorld() {
-  console.log("Hello, World!");
-}
-
-class MobileEditor {
-  constructor(name) {
-    this.name = name;
-  }
-  
-  greet() {
-    return `Welcome to ${this.name} editor!`;
-  }
-}
-
-const editor = new MobileEditor("VSCode Mobile");
-console.log(editor.greet());</code></pre>
-      </div>
+      <pre class="editor-container language-javascript"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile!
+// Click the chat button to add your code</code></pre>
     </div>
   </div>
 
   <!-- Status Bar -->
   <div class="status-bar">
     <span>JavaScript</span>
-    <span>Lines: <span id="lineCount">15</span> | Ready</span>
+    <span>Lines: <span id="lineCount">2</span> | Ready</span>
   </div>
 
   <!-- Code Input Popup -->
@@ -109,6 +94,16 @@ function hello() {
 
   <!-- Action Button -->
   <button class="bot-trigger" onclick="togglePopup()" title="Open Code Editor">💬</button>
+
+  <!-- Prism JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
