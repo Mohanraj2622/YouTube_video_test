@@ -2,138 +2,371 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Console Logger Tip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Kiss Your GF - Professional Reel</title>
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: 'Courier New', monospace;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+    
+    .header {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+    }
+    
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 30px;
       text-align: center;
+      position: relative;
     }
-
-    h1 {
-      font-size: 1.3rem;
-      color: #00ffcc;
-      margin-bottom: 2rem;
-      transition: all 0.5s ease;
+    
+    .main-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
     }
-
-    .card {
-      width: 90%;
-      max-width: 420px;
-      background: #1e1e1e;
-      border-left: 6px solid;
-      border-radius: 10px;
-      padding: 1rem;
-      font-size: 0.95rem;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
+    
+    .title {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 700;
+      margin-bottom: 40px;
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+    
+    .content-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .content-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shine 3s ease-in-out infinite;
+    }
+    
+    @keyframes shine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .step-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #ff6b6b;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+    }
+    
+    .step-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+      border-radius: 2px;
+    }
+    
+    .steps {
       text-align: left;
-      white-space: pre-wrap;
+      font-size: 18px;
+      line-height: 1.8;
+      font-weight: 500;
     }
-
-    .bad { border-color: #ff4d4d; }
-    .good { border-color: #00ff66; }
-    .show {
+    
+    .step {
+      display: block;
+      margin-bottom: 16px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      border-left: 4px solid transparent;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(238, 90, 36, 0.2));
+      transition: width 0.6s ease;
+    }
+    
+    .step.animate {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
+      border-left-color: #ff6b6b;
     }
-
-    .typing::after {
-      content: "|";
-      animation: blink 0.7s infinite;
-      color: #ccc;
+    
+    .step.animate::before {
+      width: 100%;
     }
-
-    @keyframes blink {
-      50% { opacity: 0; }
+    
+    .step:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateX(5px);
     }
-
-    /* Syntax highlighting */
-    .kw { color: #569CD6; }     /* keyword */
-    .str { color: #CE9178; }    /* string */
-    .func { color: #DCDCAA; }   /* function */
-    .var { color: #9CDCFE; }    /* variable */
-    .sys { color: #4EC9B0; }    /* system name like console */
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.1rem;
+    
+    .step-number {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-right: 12px;
+      vertical-align: middle;
+    }
+    
+    .step-text {
+      vertical-align: middle;
+    }
+    
+    .final-step {
+      background: rgba(255, 107, 107, 0.15);
+      border-left-color: #ff6b6b;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { box-shadow: 0 0 20px rgba(255, 107, 107, 0.3); }
+      to { box-shadow: 0 0 30px rgba(255, 107, 107, 0.5); }
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .emoji {
+      font-size: 1.2em;
+      margin-left: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 30px 20px;
       }
-      .card {
-        font-size: 0.9rem;
+      
+      .content-wrapper {
+        padding: 30px 20px;
+        border-radius: 16px;
+      }
+      
+      .steps {
+        font-size: 16px;
+      }
+      
+      .step {
+        padding: 12px 16px;
+      }
+      
+      .step-title {
+        font-size: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 15px;
+      }
+      
+      .brand {
+        font-size: 18px;
+      }
+      
+      .content-wrapper {
+        margin: 0 10px;
+        padding: 20px 15px;
       }
     }
   </style>
 </head>
 <body>
-
-  <h1 id="headline">😩 Still writing console.log everywhere?</h1>
-
-  <div id="bad" class="card bad"><div id="badText" class="typing"></div></div>
-  <div id="good" class="card good" style="margin-top: 20px;"><div id="goodText" class="typing"></div></div>
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">🎬</div>
+      <span>framebycode</span>
+    </div>
+  </header>
+  
+  <main class="main-content">
+    <h1 class="title">How to Kiss Your GF <span class="emoji">💋</span></h1>
+    
+    <div class="content-wrapper">
+      <div class="step-title">Step by Step Guide</div>
+      
+      <div class="steps">
+        <div class="step" data-step="1">
+          <span class="step-number">1</span>
+          <span class="step-text">Make sure you're comfortable</span>
+        </div>
+        
+        <div class="step" data-step="2">
+          <span class="step-number">2</span>
+          <span class="step-text">Lock the door</span>
+        </div>
+        
+        <div class="step" data-step="3">
+          <span class="step-number">3</span>
+          <span class="step-text">Turn off the lights</span>
+        </div>
+        
+        <div class="step final-step" data-step="4">
+          <span class="step-number">4</span>
+          <span class="step-text">Sit in the corner and cry because you are single <span class="emoji">😭</span></span>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <footer class="footer">
+    <p>Follow for more videos 🎥 ✨</p>
+  </footer>
 
   <script>
-    const badCode = `<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"User data:"</span>, <span class="var">user</span>);
-<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"Age:"</span>, <span class="var">age</span>);
-<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"Status:"</span>, <span class="var">status</span>);`;
-
-    const goodCode = `<span class="kw">function</span> <span class="func">log</span>(...<span class="var">data</span>) {
-  <span class="sys">console</span>.<span class="func">log</span>(<span class="str">"💡"</span>, ...<span class="var">data</span>);
-}
-
-<span class="func">log</span>(<span class="str">"User data:"</span>, <span class="var">user</span>);
-<span class="func">log</span>(<span class="str">"Age:"</span>, <span class="var">age</span>);
-<span class="func">log</span>(<span class="str">"Status:"</span>, <span class="var">status</span>);`;
-
-    const badText = document.getElementById("badText");
-    const goodText = document.getElementById("goodText");
-    const badCard = document.getElementById("bad");
-    const goodCard = document.getElementById("good");
-    const headline = document.getElementById("headline");
-
-    function typeHTML(html, target, delay = 25, callback) {
-      let i = 0;
-      let output = "";
-      function type() {
-        if (i < html.length) {
-          output += html.charAt(i);
-          target.innerHTML = output;
-          i++;
-          setTimeout(type, delay);
-        } else if (callback) {
-          callback();
-        }
-      }
-      type();
-    }
-
-    setTimeout(() => {
-      badCard.classList.add("show");
-      typeHTML(badCode, badText, 20, () => {
+    // Animate steps on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const steps = document.querySelectorAll('.step');
+      
+      steps.forEach((step, index) => {
         setTimeout(() => {
-          badCard.classList.remove("show");
-          setTimeout(() => {
-            goodCard.classList.add("show");
-            typeHTML(goodCode, goodText, 15, () => {
-              setTimeout(() => {
-                headline.textContent = "✅ Now use this like a pro!";
-              }, 400);
-            });
-          }, 600);
-        }, 2500);
+          step.classList.add('animate');
+        }, (index + 1) * 600);
       });
-    }, 300);
+      
+      // Add click interactions
+      steps.forEach(step => {
+        step.addEventListener('click', function() {
+          this.style.transform = 'scale(0.98)';
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 150);
+        });
+      });
+      
+      // Parallax effect for background
+      document.addEventListener('mousemove', function(e) {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        document.body.style.background = `
+          linear-gradient(
+            ${135 + mouseX * 20}deg, 
+            hsl(${230 + mouseX * 20}, 70%, ${60 + mouseY * 10}%) 0%, 
+            hsl(${280 + mouseX * 15}, 60%, ${50 + mouseY * 10}%) 100%
+          )
+        `;
+      });
+    });
   </script>
 </body>
 </html>
