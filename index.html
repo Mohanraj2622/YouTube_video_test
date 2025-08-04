@@ -2,107 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>VSCode Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Console Logger Tip</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
 
-  <!-- Prism CSS for syntax highlighting -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="style.css">
+    h1 {
+      font-size: 1.3rem;
+      color: #00ffcc;
+      margin-bottom: 2rem;
+      transition: all 0.5s ease;
+    }
 
+    .card {
+      width: 90%;
+      max-width: 420px;
+      background: #1e1e1e;
+      border-left: 6px solid;
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 0.95rem;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+      text-align: left;
+      white-space: pre-wrap;
+    }
 
+    .bad { border-color: #ff4d4d; }
+    .good { border-color: #00ff66; }
+    .show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .typing::after {
+      content: "|";
+      animation: blink 0.7s infinite;
+      color: #ccc;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Syntax highlighting */
+    .kw { color: #569CD6; }     /* keyword */
+    .str { color: #CE9178; }    /* string */
+    .func { color: #DCDCAA; }   /* function */
+    .var { color: #9CDCFE; }    /* variable */
+    .sys { color: #4EC9B0; }    /* system name like console */
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.1rem;
+      }
+      .card {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="menu-bar">
-      <div class="menu-item">File</div>
-      <div class="menu-item">Edit</div>
-      <div class="menu-item">Bugs</div>
-      <div class="menu-item">View</div>
-      
-      <div class="menu-item">Run</div>
-      <div class="menu-item">Help</div>
-    </div>
-    <div class="filename-display" id="filenameDisplay">main.js</div>
-    <div class="file-tabs-container">
-      <div class="file-tabs" id="fileTabs">
-        <div class="tab active" data-file="main.js">
-          <span>📄</span>
-          <span class="tab-name">main.code</span>
-          <span class="close-btn" onclick="closeTab(event, 'main.js')">×</span>
-        </div>
-      </div>
-      <button class="new-tab-btn" onclick="createNewTab()" title="New File">+</button>
-    </div>
-  </div>
 
-  <!-- Main Container -->
-  <div class="main-container">
-    <!-- Sidebar -->
-    <div class="side-bar">
-      <div class="icon" title="Explorer" onclick="showFileExplorer()">📁</div>
-      <div class="icon" title="Search">🔍</div>
-      <div class="icon" title="Source Control">🌿</div>
-      <div class="icon" title="Export" onclick="toggleExportPopup()">📤</div>
-      <div class="icon" title="Settings">⚙️</div>
-    </div>
+  <h1 id="headline">😩 Still writing console.log everywhere?</h1>
 
-    <!-- Editor Wrapper -->
-    <div class="editor-wrapper">
-      <div class="line-numbers" id="lineNumbers">1</div>
-      <pre class="editor-container language-javascript"><code id="editor" class="language-javascript">// Welcome to VSCode Mobile!
-// Click the chat button to add your code</code></pre>
-    </div>
-  </div>
+  <div id="bad" class="card bad"><div id="badText" class="typing"></div></div>
+  <div id="good" class="card good" style="margin-top: 20px;"><div id="goodText" class="typing"></div></div>
 
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <span>JavaScript</span>
-    <span>Lines: <span id="lineCount">2</span> | Ready</span>
-  </div>
+  <script>
+    const badCode = `<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"User data:"</span>, <span class="var">user</span>);
+<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"Age:"</span>, <span class="var">age</span>);
+<span class="sys">console</span>.<span class="func">log</span>(<span class="str">"Status:"</span>, <span class="var">status</span>);`;
 
-  <!-- Code Input Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-header">💻 Code Editor</div>
-    <input type="text" id="fileNameInput" placeholder="Enter filename (e.g., app.js, index.html, style.css)" 
-           class="export-filename">
-    <textarea id="codeInput" placeholder="Enter your code here...
-Example:
-function hello() {
-  console.log('Hello World!');
-}"></textarea>
-    <div class="popup-buttons">
-      <button class="submit-btn" onclick="submitCode()">Add Code</button>
-      <button class="clear-btn" onclick="clearEditor()">Clear All</button>
-      <button class="cancel-btn" onclick="togglePopup()">Cancel</button>
-    </div>
-  </div>
+    const goodCode = `<span class="kw">function</span> <span class="func">log</span>(...<span class="var">data</span>) {
+  <span class="sys">console</span>.<span class="func">log</span>(<span class="str">"💡"</span>, ...<span class="var">data</span>);
+}
 
-  <!-- Export Popup -->
-  <div class="export-popup" id="exportPopup">
-    <div class="popup-header">📤 Export File</div>
-    <input type="text" id="exportFilename" class="export-filename" placeholder="exported-file.js">
-    <div class="export-options">
-      <div class="export-option" onclick="exportFile('download')">💾 Download File</div>
-      <div class="export-option" onclick="exportFile('copy')">📋 Copy to Clipboard</div>
-    </div>
-    <div class="popup-buttons">
-      <button class="cancel-btn" onclick="toggleExportPopup()">Cancel</button>
-    </div>
-  </div>
+<span class="func">log</span>(<span class="str">"User data:"</span>, <span class="var">user</span>);
+<span class="func">log</span>(<span class="str">"Age:"</span>, <span class="var">age</span>);
+<span class="func">log</span>(<span class="str">"Status:"</span>, <span class="var">status</span>);`;
 
-  <!-- Action Button -->
-  <button class="bot-trigger" onclick="togglePopup()" title="Open Code Editor">💬</button>
+    const badText = document.getElementById("badText");
+    const goodText = document.getElementById("goodText");
+    const badCard = document.getElementById("bad");
+    const goodCard = document.getElementById("good");
+    const headline = document.getElementById("headline");
 
-  <!-- Prism JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
-<script src="script.js"></script>
+    function typeHTML(html, target, delay = 25, callback) {
+      let i = 0;
+      let output = "";
+      function type() {
+        if (i < html.length) {
+          output += html.charAt(i);
+          target.innerHTML = output;
+          i++;
+          setTimeout(type, delay);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
 
+    setTimeout(() => {
+      badCard.classList.add("show");
+      typeHTML(badCode, badText, 20, () => {
+        setTimeout(() => {
+          badCard.classList.remove("show");
+          setTimeout(() => {
+            goodCard.classList.add("show");
+            typeHTML(goodCode, goodText, 15, () => {
+              setTimeout(() => {
+                headline.textContent = "✅ Now use this like a pro!";
+              }, 400);
+            });
+          }, 600);
+        }, 2500);
+      });
+    }, 300);
+  </script>
 </body>
 </html>
