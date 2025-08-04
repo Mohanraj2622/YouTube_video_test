@@ -3,369 +3,539 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How to Kiss Your GF - Professional Reel</title>
+  <title>SQL Commands Professional Mind Map</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      color: #ffffff;
-      overflow-x: hidden;
+      margin: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e2e8f0;
+      overflow: hidden;
+      height: 100vh;
     }
-    
-    .header {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    h1 {
+      text-align: center;
+      color: #f8fafc;
+      font-size: 2.8rem;
+      font-weight: 700;
+      padding: 25px 0;
+      text-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
+      opacity: 0;
+      transform: translateY(-30px);
+      animation: fadeInTitle 1.2s ease-out 0.5s forwards;
+      margin: 0;
       position: relative;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      letter-spacing: -0.025em;
     }
-    
-    .header::before {
-      content: '';
+
+    @keyframes fadeInTitle {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .mind-map-container {
       position: absolute;
       top: 0;
       left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      background-size: 200% 100%;
-      animation: shimmer 3s ease-in-out infinite;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
     }
-    
-    @keyframes shimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-    
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 600;
-      font-size: 20px;
-      letter-spacing: -0.5px;
-    }
-    
-    .brand-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+
+    .center-node {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px 30px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
       text-align: center;
-      position: relative;
+      line-height: 1.2;
+      box-shadow: 
+        0 0 0 4px rgba(59, 130, 246, 0.3),
+        0 10px 30px rgba(59, 130, 246, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      animation: growCenter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s forwards;
+      z-index: 5;
     }
-    
-    .main-content::before {
-      content: '';
+
+    @keyframes growCenter {
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .main-branch {
+      stroke: #3b82f6;
+      stroke-width: 4;
+      fill: none;
+      filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3));
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      opacity: 0;
+      stroke-linecap: round;
+    }
+
+    .main-branch-1 { animation: drawBranch 1.8s ease-out 2.7s forwards; }
+    .main-branch-2 { animation: drawBranch 1.8s ease-out 4.2s forwards; }
+    .main-branch-3 { animation: drawBranch 1.8s ease-out 5.7s forwards; }
+    .main-branch-4 { animation: drawBranch 1.8s ease-out 7.2s forwards; }
+
+    @keyframes drawBranch {
+      to {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+    }
+
+    .category-node {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      box-shadow: 
+        0 4px 15px rgba(59, 130, 246, 0.25),
+        0 0 0 2px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: scale(0);
+      z-index: 5;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .ddl-node { 
+      top: 18%; 
+      left: 12%;
+      animation: popNode 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 4.2s forwards;
+    }
+    .dml-node { 
+      top: 18%; 
+      right: 12%;
+      animation: popNode 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 5.7s forwards;
+    }
+    .dcl-node { 
+      bottom: 22%; 
+      left: 12%;
+      animation: popNode 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 7.2s forwards;
+    }
+    .tcl-node { 
+      bottom: 22%; 
+      right: 12%;
+      animation: popNode 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 8.7s forwards;
+    }
+
+    @keyframes popNode {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .sub-branch {
+      stroke: #60a5fa;
+      stroke-width: 2.5;
+      fill: none;
+      filter: drop-shadow(0 1px 4px rgba(96, 165, 250, 0.2));
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      opacity: 0;
+      stroke-linecap: round;
+    }
+
+    .connector-line {
+      stroke: #60a5fa;
+      stroke-width: 1.5;
+      fill: none;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      opacity: 0;
+      stroke-linecap: round;
+    }
+
+    /* DDL Sub-branches and connectors */
+    .ddl-sub-1 { animation: drawSubBranch 0.8s ease-out 4.7s forwards; }
+    .ddl-sub-2 { animation: drawSubBranch 0.8s ease-out 4.9s forwards; }
+    .ddl-sub-3 { animation: drawSubBranch 0.8s ease-out 5.1s forwards; }
+    .ddl-sub-4 { animation: drawSubBranch 0.8s ease-out 5.3s forwards; }
+    .ddl-sub-5 { animation: drawSubBranch 0.8s ease-out 5.5s forwards; }
+
+    .ddl-conn-1 { animation: drawSubBranch 0.6s ease-out 4.8s forwards; }
+    .ddl-conn-2 { animation: drawSubBranch 0.6s ease-out 5.0s forwards; }
+    .ddl-conn-3 { animation: drawSubBranch 0.6s ease-out 5.2s forwards; }
+    .ddl-conn-4 { animation: drawSubBranch 0.6s ease-out 5.4s forwards; }
+    .ddl-conn-5 { animation: drawSubBranch 0.6s ease-out 5.6s forwards; }
+
+    /* DML Sub-branches and connectors */
+    .dml-sub-1 { animation: drawSubBranch 0.8s ease-out 6.2s forwards; }
+    .dml-sub-2 { animation: drawSubBranch 0.8s ease-out 6.4s forwards; }
+    .dml-sub-3 { animation: drawSubBranch 0.8s ease-out 6.6s forwards; }
+    .dml-sub-4 { animation: drawSubBranch 0.8s ease-out 6.8s forwards; }
+    .dml-sub-5 { animation: drawSubBranch 0.8s ease-out 7.0s forwards; }
+    .dml-sub-6 { animation: drawSubBranch 0.8s ease-out 7.2s forwards; }
+
+    .dml-conn-1 { animation: drawSubBranch 0.6s ease-out 6.3s forwards; }
+    .dml-conn-2 { animation: drawSubBranch 0.6s ease-out 6.5s forwards; }
+    .dml-conn-3 { animation: drawSubBranch 0.6s ease-out 6.7s forwards; }
+    .dml-conn-4 { animation: drawSubBranch 0.6s ease-out 6.9s forwards; }
+    .dml-conn-5 { animation: drawSubBranch 0.6s ease-out 7.1s forwards; }
+    .dml-conn-6 { animation: drawSubBranch 0.6s ease-out 7.3s forwards; }
+
+    /* DCL Sub-branches and connectors */
+    .dcl-sub-1 { animation: drawSubBranch 0.8s ease-out 7.7s forwards; }
+    .dcl-sub-2 { animation: drawSubBranch 0.8s ease-out 7.9s forwards; }
+
+    .dcl-conn-1 { animation: drawSubBranch 0.6s ease-out 7.8s forwards; }
+    .dcl-conn-2 { animation: drawSubBranch 0.6s ease-out 8.0s forwards; }
+
+    /* TCL Sub-branches and connectors */
+    .tcl-sub-1 { animation: drawSubBranch 0.8s ease-out 9.2s forwards; }
+    .tcl-sub-2 { animation: drawSubBranch 0.8s ease-out 9.4s forwards; }
+    .tcl-sub-3 { animation: drawSubBranch 0.8s ease-out 9.6s forwards; }
+
+    .tcl-conn-1 { animation: drawSubBranch 0.6s ease-out 9.3s forwards; }
+    .tcl-conn-2 { animation: drawSubBranch 0.6s ease-out 9.5s forwards; }
+    .tcl-conn-3 { animation: drawSubBranch 0.6s ease-out 9.7s forwards; }
+
+    @keyframes drawSubBranch {
+      to {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+    }
+
+    .command-label {
+      position: absolute;
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+      color: #1e293b;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(59, 130, 246, 0.2);
+      opacity: 0;
+      transform: scale(0);
+      z-index: 6;
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .command-label:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 
+        0 8px 25px rgba(59, 130, 246, 0.25),
+        0 0 0 2px rgba(59, 130, 246, 0.4);
+    }
+
+    /* DDL Commands */
+    .cmd-create { top: 6%; left: 4%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 5.2s forwards; }
+    .cmd-alter { top: 10%; left: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 5.4s forwards; }
+    .cmd-drop { top: 14%; left: 1%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 5.6s forwards; }
+    .cmd-truncate { top: 18%; left: 0.5%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 5.8s forwards; }
+    .cmd-rename { top: 22%; left: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 6.0s forwards; }
+
+    /* DML Commands */
+    .cmd-select { top: 6%; right: 4%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 6.7s forwards; }
+    .cmd-update { top: 10%; right: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 6.9s forwards; }
+    .cmd-insert { top: 14%; right: 1%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 7.1s forwards; }
+    .cmd-delete { top: 18%; right: 0.5%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 7.3s forwards; }
+    .cmd-merge { top: 22%; right: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 7.5s forwards; }
+    .cmd-lock { top: 26%; right: 4%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 7.7s forwards; }
+
+    /* DCL Commands */
+    .cmd-grant { bottom: 12%; left: 4%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 8.2s forwards; }
+    .cmd-revoke { bottom: 16%; left: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 8.4s forwards; }
+
+    /* TCL Commands */
+    .cmd-commit { bottom: 12%; right: 4%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 9.7s forwards; }
+    .cmd-rollback { bottom: 16%; right: 2%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 9.9s forwards; }
+    .cmd-savepoint { bottom: 20%; right: 1%; animation: popCommand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 10.1s forwards; }
+
+    @keyframes popCommand {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(-90deg);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.1) rotate(5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .drawing-cursor {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, #3b82f6, #1d4ed8);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 0 3px rgba(59, 130, 246, 0.3),
+        0 0 15px rgba(59, 130, 246, 0.6);
+      opacity: 0;
+      z-index: 10;
       pointer-events: none;
     }
-    
-    .title {
-      font-size: clamp(28px, 6vw, 48px);
-      font-weight: 700;
-      margin-bottom: 40px;
-      background: linear-gradient(135deg, #ffffff, #f8f9fa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      letter-spacing: -1px;
-      line-height: 1.2;
+
+    .cursor-1 {
+      animation: 
+        moveCursor1 1.8s ease-out 2.7s forwards,
+        fadeOutCursor 0.5s ease-out 4.4s forwards;
     }
-    
-    .content-wrapper {
-      max-width: 600px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 40px 30px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
+
+    .cursor-2 {
+      animation: 
+        moveCursor2 1.8s ease-out 4.2s forwards,
+        fadeOutCursor 0.5s ease-out 5.9s forwards;
     }
-    
-    .content-wrapper::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      animation: shine 3s ease-in-out infinite;
+
+    .cursor-3 {
+      animation: 
+        moveCursor3 1.8s ease-out 5.7s forwards,
+        fadeOutCursor 0.5s ease-out 7.4s forwards;
     }
-    
-    @keyframes shine {
-      0% { left: -100%; }
-      100% { left: 100%; }
+
+    .cursor-4 {
+      animation: 
+        moveCursor4 1.8s ease-out 7.2s forwards,
+        fadeOutCursor 0.5s ease-out 8.9s forwards;
     }
-    
-    .step-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 30px;
-      color: #ff6b6b;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      position: relative;
+
+    @keyframes moveCursor1 {
+      0% { top: 50%; left: 50%; opacity: 1; }
+      100% { top: 18%; left: 12%; opacity: 1; }
     }
-    
-    .step-title::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #ff6b6b, #ee5a24);
-      border-radius: 2px;
+
+    @keyframes moveCursor2 {
+      0% { top: 50%; left: 50%; opacity: 1; }
+      100% { top: 18%; right: 12%; opacity: 1; }
     }
-    
-    .steps {
-      text-align: left;
-      font-size: 18px;
-      line-height: 1.8;
-      font-weight: 500;
+
+    @keyframes moveCursor3 {
+      0% { top: 50%; left: 50%; opacity: 1; }
+      100% { bottom: 22%; left: 12%; opacity: 1; }
     }
-    
-    .step {
-      display: block;
-      margin-bottom: 16px;
-      padding: 16px 20px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      border-left: 4px solid transparent;
-      opacity: 0;
-      transform: translateX(-30px);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+
+    @keyframes moveCursor4 {
+      0% { top: 50%; left: 50%; opacity: 1; }
+      100% { bottom: 22%; right: 12%; opacity: 1; }
     }
-    
-    .step::before {
-      content: '';
-      position: absolute;
+
+    @keyframes fadeOutCursor {
+      to { opacity: 0; }
+    }
+
+    .completion-effect {
+      position: fixed;
       top: 0;
       left: 0;
-      bottom: 0;
-      width: 0;
-      background: linear-gradient(90deg, rgba(255, 107, 107, 0.2), rgba(238, 90, 36, 0.2));
-      transition: width 0.6s ease;
-    }
-    
-    .step.animate {
-      opacity: 1;
-      transform: translateX(0);
-      border-left-color: #ff6b6b;
-    }
-    
-    .step.animate::before {
       width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      animation: completionPulse 2s ease-out 10.5s forwards;
     }
-    
-    .step:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateX(5px);
+
+    @keyframes completionPulse {
+      0% { opacity: 0; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1); }
     }
-    
-    .step-number {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-      color: white;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 28px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-right: 12px;
-      vertical-align: middle;
-    }
-    
-    .step-text {
-      vertical-align: middle;
-    }
-    
-    .final-step {
-      background: rgba(255, 107, 107, 0.15);
-      border-left-color: #ff6b6b;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow {
-      from { box-shadow: 0 0 20px rgba(255, 107, 107, 0.3); }
-      to { box-shadow: 0 0 30px rgba(255, 107, 107, 0.5); }
-    }
-    
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      opacity: 0.8;
-      background: rgba(0, 0, 0, 0.2);
-    }
-    
-    .emoji {
-      font-size: 1.2em;
-      margin-left: 8px;
-    }
-    
+
     @media (max-width: 768px) {
-      .main-content {
-        padding: 30px 20px;
+      .category-node {
+        padding: 12px 20px;
+        font-size: 1rem;
       }
-      
-      .content-wrapper {
-        padding: 30px 20px;
-        border-radius: 16px;
+      .command-label {
+        padding: 8px 12px;
+        font-size: 0.85rem;
       }
-      
-      .steps {
-        font-size: 16px;
+      h1 {
+        font-size: 2rem;
       }
-      
-      .step {
-        padding: 12px 16px;
-      }
-      
-      .step-title {
-        font-size: 20px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .header {
-        padding: 15px;
-      }
-      
-      .brand {
-        font-size: 18px;
-      }
-      
-      .content-wrapper {
-        margin: 0 10px;
-        padding: 20px 15px;
+      .center-node {
+        width: 120px;
+        height: 120px;
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="brand">
-      <div class="brand-icon">🎬</div>
-      <span>framebycode</span>
-    </div>
-  </header>
+  <div class="completion-effect"></div>
   
-  <main class="main-content">
-    <h1 class="title">How to Kiss Your GF <span class="emoji">💋</span></h1>
-    
-    <div class="content-wrapper">
-      <div class="step-title">Step by Step Guide</div>
-      
-      <div class="steps">
-        <div class="step" data-step="1">
-          <span class="step-number">1</span>
-          <span class="step-text">Make sure you're comfortable</span>
-        </div>
-        
-        <div class="step" data-step="2">
-          <span class="step-number">2</span>
-          <span class="step-text">Lock the door</span>
-        </div>
-        
-        <div class="step" data-step="3">
-          <span class="step-number">3</span>
-          <span class="step-text">Turn off the lights</span>
-        </div>
-        
-        <div class="step final-step" data-step="4">
-          <span class="step-number">4</span>
-          <span class="step-text">Sit in the corner and cry because you are single <span class="emoji">😭</span></span>
-        </div>
-      </div>
-    </div>
-  </main>
+  <h1>SQL Commands Mind Map</h1>
   
-  <footer class="footer">
-    <p>Follow for more videos 🎥 ✨</p>
-  </footer>
+  <div class="mind-map-container">
+    <!-- Drawing Cursors -->
+    <div class="drawing-cursor cursor-1"></div>
+    <div class="drawing-cursor cursor-2"></div>
+    <div class="drawing-cursor cursor-3"></div>
+    <div class="drawing-cursor cursor-4"></div>
+
+    <!-- SVG for all branches and connectors -->
+    <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+      <!-- Main Branches from Center to Categories -->
+      <line class="main-branch main-branch-1" x1="50%" y1="50%" x2="20%" y2="25%" />
+      <line class="main-branch main-branch-2" x1="50%" y1="50%" x2="80%" y2="25%" />
+      <line class="main-branch main-branch-3" x1="50%" y1="50%" x2="20%" y2="75%" />
+      <line class="main-branch main-branch-4" x1="50%" y1="50%" x2="80%" y2="75%" />
+
+      <!-- DDL Sub-branches -->
+      <line class="sub-branch ddl-sub-1" x1="20%" y1="25%" x2="12%" y2="15%" />
+      <line class="sub-branch ddl-sub-2" x1="20%" y1="25%" x2="10%" y2="19%" />
+      <line class="sub-branch ddl-sub-3" x1="20%" y1="25%" x2="8%" y2="23%" />
+      <line class="sub-branch ddl-sub-4" x1="20%" y1="25%" x2="6%" y2="27%" />
+      <line class="sub-branch ddl-sub-5" x1="20%" y1="25%" x2="10%" y2="31%" />
+
+      <!-- DDL Connector lines to command labels -->
+      <line class="connector-line ddl-conn-1" x1="12%" y1="15%" x2="8%" y2="8%" />
+      <line class="connector-line ddl-conn-2" x1="10%" y1="19%" x2="6%" y2="12%" />
+      <line class="connector-line ddl-conn-3" x1="8%" y1="23%" x2="4%" y2="16%" />
+      <line class="connector-line ddl-conn-4" x1="6%" y1="27%" x2="3%" y2="20%" />
+      <line class="connector-line ddl-conn-5" x1="10%" y1="31%" x2="6%" y2="24%" />
+
+      <!-- DML Sub-branches -->
+      <line class="sub-branch dml-sub-1" x1="80%" y1="25%" x2="88%" y2="15%" />
+      <line class="sub-branch dml-sub-2" x1="80%" y1="25%" x2="90%" y2="19%" />
+      <line class="sub-branch dml-sub-3" x1="80%" y1="25%" x2="92%" y2="23%" />
+      <line class="sub-branch dml-sub-4" x1="80%" y1="25%" x2="94%" y2="27%" />
+      <line class="sub-branch dml-sub-5" x1="80%" y1="25%" x2="90%" y2="31%" />
+      <line class="sub-branch dml-sub-6" x1="80%" y1="25%" x2="85%" y2="35%" />
+
+      <!-- DML Connector lines -->
+      <line class="connector-line dml-conn-1" x1="88%" y1="15%" x2="92%" y2="8%" />
+      <line class="connector-line dml-conn-2" x1="90%" y1="19%" x2="94%" y2="12%" />
+      <line class="connector-line dml-conn-3" x1="92%" y1="23%" x2="96%" y2="16%" />
+      <line class="connector-line dml-conn-4" x1="94%" y1="27%" x2="97%" y2="20%" />
+      <line class="connector-line dml-conn-5" x1="90%" y1="31%" x2="94%" y2="24%" />
+      <line class="connector-line dml-conn-6" x1="85%" y1="35%" x2="89%" y2="28%" />
+
+      <!-- DCL Sub-branches -->
+      <line class="sub-branch dcl-sub-1" x1="20%" y1="75%" x2="12%" y2="85%" />
+      <line class="sub-branch dcl-sub-2" x1="20%" y1="75%" x2="10%" y2="81%" />
+
+      <!-- DCL Connector lines -->
+      <line class="connector-line dcl-conn-1" x1="12%" y1="85%" x2="8%" y2="88%" />
+      <line class="connector-line dcl-conn-2" x1="10%" y1="81%" x2="6%" y2="84%" />
+
+      <!-- TCL Sub-branches -->
+      <line class="sub-branch tcl-sub-1" x1="80%" y1="75%" x2="88%" y2="85%" />
+      <line class="sub-branch tcl-sub-2" x1="80%" y1="75%" x2="90%" y2="81%" />
+      <line class="sub-branch tcl-sub-3" x1="80%" y1="75%" x2="92%" y2="77%" />
+
+      <!-- TCL Connector lines -->
+      <line class="connector-line tcl-conn-1" x1="88%" y1="85%" x2="92%" y2="88%" />
+      <line class="connector-line tcl-conn-2" x1="90%" y1="81%" x2="94%" y2="84%" />
+      <line class="connector-line tcl-conn-3" x1="92%" y1="77%" x2="96%" y2="80%" />
+    </svg>
+
+    <!-- Center Node -->
+    <div class="center-node">SQL<br>DATABASE</div>
+
+    <!-- Category Nodes -->
+    <div class="category-node ddl-node">DDL</div>
+    <div class="category-node dml-node">DML</div>
+    <div class="category-node dcl-node">DCL</div>
+    <div class="category-node tcl-node">TCL</div>
+
+    <!-- Command Labels -->
+    <!-- DDL Commands -->
+    <div class="command-label cmd-create">CREATE</div>
+    <div class="command-label cmd-alter">ALTER</div>
+    <div class="command-label cmd-drop">DROP</div>
+    <div class="command-label cmd-truncate">TRUNCATE</div>
+    <div class="command-label cmd-rename">RENAME</div>
+
+    <!-- DML Commands -->
+    <div class="command-label cmd-select">SELECT</div>
+    <div class="command-label cmd-update">UPDATE</div>
+    <div class="command-label cmd-insert">INSERT</div>
+    <div class="command-label cmd-delete">DELETE</div>
+    <div class="command-label cmd-merge">MERGE</div>
+    <div class="command-label cmd-lock">LOCK TABLE</div>
+
+    <!-- DCL Commands -->
+    <div class="command-label cmd-grant">GRANT</div>
+    <div class="command-label cmd-revoke">REVOKE</div>
+
+    <!-- TCL Commands -->
+    <div class="command-label cmd-commit">COMMIT</div>
+    <div class="command-label cmd-rollback">ROLLBACK</div>
+    <div class="command-label cmd-savepoint">SAVEPOINT</div>
+  </div>
 
   <script>
-    // Animate steps on load
+    // Professional interaction effects
     document.addEventListener('DOMContentLoaded', function() {
-      const steps = document.querySelectorAll('.step');
+      const commands = document.querySelectorAll('.command-label');
+      const categoryNodes = document.querySelectorAll('.category-node');
       
-      steps.forEach((step, index) => {
-        setTimeout(() => {
-          step.classList.add('animate');
-        }, (index + 1) * 600);
-      });
-      
-      // Add click interactions
-      steps.forEach(step => {
-        step.addEventListener('click', function() {
-          this.style.transform = 'scale(0.98)';
-          setTimeout(() => {
-            this.style.transform = '';
-          }, 150);
+      // Enhanced hover effects for commands
+      commands.forEach(command => {
+        command.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.08) translateY(-2px)';
+          this.style.zIndex = '20';
+        });
+        
+        command.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1) translateY(0)';
+          this.style.zIndex = '6';
         });
       });
-      
-      // Parallax effect for background
-      document.addEventListener('mousemove', function(e) {
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
+
+      // Category node interactions
+      categoryNodes.forEach(node => {
+        node.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.05)';
+          this.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.4), 0 0 0 3px rgba(59, 130, 246, 0.3)';
+        });
         
-        document.body.style.background = `
-          linear-gradient(
-            ${135 + mouseX * 20}deg, 
-            hsl(${230 + mouseX * 20}, 70%, ${60 + mouseY * 10}%) 0%, 
-            hsl(${280 + mouseX * 15}, 60%, ${50 + mouseY * 10}%) 100%
-          )
-        `;
+        node.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = '0 4px 15px rgba(59, 130, 246, 0.25), 0 0 0 2px rgba(59, 130, 246, 0.2)';
+        });
       });
+
+      // Completion notification
+      setTimeout(() => {
+        console.log('🎯 Professional SQL Mind Map Complete!');
+      }, 11000);
     });
   </script>
 </body>
